@@ -11,8 +11,13 @@ import (
 // MongoCN contiene la conexion a la base de datos
 var MongoCN = ConectarBD()
 
-// var clientOptions = options.Client().ApplyURI("mongodb://127.0.0.1:27017/?compressors=disabled&gssapiServiceName=mongodb")
+// Localhost
+// var clientOptions = options.Client().ApplyURI("mongodb://root:123456@localhost:27017")
 
+// Digital Ocean
+// var clientOptions = options.Client().ApplyURI("mongodb://root:123456@134.209.66.168:27017")
+
+// mongodb.com
 var clientOptions = options.Client().ApplyURI("mongodb+srv://root:XDwJ2WgmXeLYCzUw@cluster0.lji8t.mongodb.net/twittor?retryWrites=true&w=majority")
 
 // ConectarBD conecta a la base de datos

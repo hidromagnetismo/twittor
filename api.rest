@@ -1,0 +1,107 @@
+
+@api = https://jsonplaceholder.typicode.com
+
+### Obteniendo todas las publicaciones
+GET {{api}}/posts
+
+### Obteniendo una sola publicacion
+GET {{api}}/posts/1
+
+### Creando una nueva publicación
+POST {{api}}/posts
+Content-Type: application/json
+
+# esto de aqui abajo es un request body
+{
+    // este es el titulo de la publicacion
+    "title": "Aprendiendo vscode",
+    // este es el body de la publicacion
+    "body": "Esta muy divertido"
+}
+
+### Eliminando una publicación
+DELETE {{api}}/posts/1
+
+### Actualizando una publicacion por id
+PUT {{api}}/posts/1
+Content-Type: application/json
+
+{
+    "title": "Esta es la publicación numero 1",
+    "body": "Este contenido fue actulizado"
+}
+
+### 
+
+
+// "os"
+// "log"
+// "time"
+// "context"
+// "net/http"
+// "encoding/json"
+// "github.com/rs/cors"
+// "github.com/gorilla/mux"
+// "golang.org/x/crypto/bcrypt"
+// jwt "github.com/dgrijalva/jwt-go"
+
+// "go.mongodb.org/mongo-driver/mongo"
+// "go.mongodb.org/mongo-driver/mongo/options"
+// "go.mongodb.org/mongo-driver/bson"
+// "go.mongodb.org/mongo-driver/bson/primitive"
+
+// "github.com/hidromagnetismo/twittor/bd"
+// "github.com/hidromagnetismo/twittor/handlers"
+// "github.com/hidromagnetismo/twittor/jwt"
+// "github.com/hidromagnetismo/twittor/middlew"
+// "github.com/hidromagnetismo/twittor/models"
+// "github.com/hidromagnetismo/twittor/routers"
+
+
+@token = kshdlsakdjhaslkdjhs
+
+@ruta = https://twittornat.herokuapp.com
+@ruta = http://localhost:8080
+
+
+### Registro de usuario
+POST {{ruta}}/registro
+Content-Type: application/json
+
+{
+	"email": "pablot@registro.com",
+	"password": "123456",
+	"nombre": "Pablo",
+	"apellidos": "Tilotta",
+	"fechaNacimiento": "1970-06-30T00:00:00Z"
+}
+
+### Login
+POST {{ruta}}/login
+Content-Type: application/json
+
+{
+	"email": "pablot@registro.com",
+	"password": "123456"
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
