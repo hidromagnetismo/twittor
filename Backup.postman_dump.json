@@ -1,0 +1,208 @@
+{
+	"version": 1,
+	"collections": [
+		{
+			"id": "f3a51eae-6f2c-41a7-b686-ec260d395acc",
+			"uid": "0-f3a51eae-6f2c-41a7-b686-ec260d395acc",
+			"name": "Twittor",
+			"description": "Curso BackEnd en Go",
+			"auth": null,
+			"events": null,
+			"variables": [],
+			"order": [
+				"50829d23-634b-46c2-9c61-7c0375a64ccd",
+				"daf5f096-64ec-4fab-93b4-7b17bdc9d9f4",
+				"7de755e1-13be-41fa-84a7-c52f2dbfa67c"
+			],
+			"folders_order": [],
+			"protocolProfileBehavior": {},
+			"createdAt": "2021-02-19T19:28:47.802Z",
+			"folders": [],
+			"requests": [
+				{
+					"id": "50829d23-634b-46c2-9c61-7c0375a64ccd",
+					"uid": "0-50829d23-634b-46c2-9c61-7c0375a64ccd",
+					"name": "Registro",
+					"url": "{{__URL__}}/registro",
+					"description": null,
+					"data": [],
+					"dataOptions": null,
+					"dataMode": "raw",
+					"headerData": [
+						{
+							"key": "Content-Type",
+							"value": "application/json"
+						}
+					],
+					"method": "POST",
+					"pathVariableData": [],
+					"queryParams": [],
+					"auth": null,
+					"events": null,
+					"folder": null,
+					"currentHelper": null,
+					"helperAttributes": null,
+					"collectionId": "f3a51eae-6f2c-41a7-b686-ec260d395acc",
+					"rawModeData": "{\n\t\"email\": \"pablot@registro.com\",\n\t\"password\": \"123456\",\n\t\"nombre\": \"Pablo\",\n\t\"apellidos\": \"Tilotta\",\n\t\"fechaNacimiento\": \"1970-06-30T00:00:00Z\"\n}",
+					"headers": "Content-Type: application/json\n",
+					"pathVariables": {}
+				},
+				{
+					"id": "7de755e1-13be-41fa-84a7-c52f2dbfa67c",
+					"uid": "0-7de755e1-13be-41fa-84a7-c52f2dbfa67c",
+					"name": "Ver Perfil",
+					"url": "{{__URL__}}/verperfil?id={{__USER_ID__}}",
+					"description": null,
+					"data": null,
+					"dataOptions": null,
+					"dataMode": null,
+					"headerData": [
+						{
+							"key": "Content-Type",
+							"value": "application/json"
+						},
+						{
+							"key": "Authorization",
+							"value": "Bearer{{__TOKEN__}}"
+						}
+					],
+					"method": "GET",
+					"pathVariableData": [],
+					"queryParams": [
+						{
+							"key": "id",
+							"value": "{{__USER_ID__}}",
+							"equals": true,
+							"description": "",
+							"enabled": true
+						}
+					],
+					"auth": null,
+					"events": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"id": "c46c23b9-4606-4da8-824c-ba54aa8bc3fd",
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"folder": null,
+					"preRequestScript": null,
+					"tests": null,
+					"currentHelper": null,
+					"helperAttributes": null,
+					"collectionId": "f3a51eae-6f2c-41a7-b686-ec260d395acc",
+					"headers": "Content-Type: application/json\nAuthorization: Bearer{{__TOKEN__}}\n",
+					"pathVariables": {}
+				},
+				{
+					"id": "daf5f096-64ec-4fab-93b4-7b17bdc9d9f4",
+					"uid": "0-daf5f096-64ec-4fab-93b4-7b17bdc9d9f4",
+					"name": "Login",
+					"url": "{{__URL__}}/login",
+					"description": null,
+					"data": [],
+					"dataOptions": null,
+					"dataMode": "raw",
+					"headerData": [
+						{
+							"key": "Content-Type",
+							"value": "application/json"
+						}
+					],
+					"method": "POST",
+					"pathVariableData": [],
+					"queryParams": [],
+					"auth": null,
+					"events": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"id": "c22e0398-4b11-46aa-8573-fdd71a8ee7e9",
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"id": "a935155e-1bf8-4e59-b24f-479ebfe91716",
+								"exec": [
+									"pm.globals.set(\"__TOKEN__\", pm.response.json().token);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"folder": null,
+					"preRequestScript": null,
+					"tests": "pm.globals.set(\"__TOKEN__\", pm.response.json().token);",
+					"currentHelper": null,
+					"helperAttributes": null,
+					"collectionId": "f3a51eae-6f2c-41a7-b686-ec260d395acc",
+					"rawModeData": "{\n\t\"email\": \"pablot@registro.com\",\n\t\"password\": \"123456\"\n}",
+					"headers": "Content-Type: application/json\n",
+					"pathVariables": {}
+				}
+			]
+		}
+	],
+	"environments": [
+		{
+			"id": "4b180521-f524-4319-b538-3c76397761b1",
+			"name": "Local",
+			"values": [
+				{
+					"key": "__URL__",
+					"value": "http://localhost:8080",
+					"enabled": true
+				},
+				{
+					"key": "__AUTH_URL__",
+					"value": "http://localhost:8080/login",
+					"enabled": true
+				},
+				{
+					"key": "__USER_ID__",
+					"value": "602d7456c5053e97fdca47c0",
+					"enabled": true
+				}
+			]
+		},
+		{
+			"id": "bfc567e0-01a7-4016-8343-82d23276b423",
+			"name": "Heroku",
+			"values": [
+				{
+					"key": "__URL__",
+					"value": "https://twittornat.herokuapp.com",
+					"enabled": true
+				},
+				{
+					"key": "__AUTH_URL__",
+					"value": "https://twittornat.herokuapp.com/login",
+					"enabled": true
+				},
+				{
+					"key": "__USER_ID__",
+					"value": "602d7456c5053e97fdca47c0",
+					"enabled": true
+				}
+			]
+		}
+	],
+	"headerPresets": [],
+	"globals": [
+		{
+			"key": "__TOKEN__",
+			"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2MDJkNzQ1NmM1MDUzZTk3ZmRjYTQ3YzAiLCJhcGVsbGlkb3MiOiJIb3N0IiwiYmlvZ3JhZmlhIjoiIiwiZW1haWwiOiJwYWJsb3RAcmVnaXN0cm8uY29tIiwiZXhwIjoxNjEzNzc5NjE0LCJmZWNoYV9uYWNpbWllbnRvIjoiMTk3MC0wNi0zMFQwMDowMDowMFoiLCJub21icmUiOiJMb2NhbCIsInNpdGlvd2ViIjoiIiwidWJpY2FjaW9uIjoiIn0.eg5WD-ItYywlO--30ZipDZmLAI24GOSQ3s2mDpIhTO8",
+			"enabled": true
+		}
+	]
+}

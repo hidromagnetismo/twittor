@@ -23,7 +23,8 @@ func GeneroJWT(u models.Usuario) (string, error) {
 		"ubicacion":        u.Ubicacion,
 		"sitioweb":         u.SitioWeb,
 		"_id":              u.ID.Hex(),
-		"exp":              time.Now().Add(24 * time.Hour).Unix(),
+		"exp":              time.Now().Add(30 * time.Minute).Unix(),
+		// "exp":              time.Now().Add(24 * time.Hour).Unix(),
 	}
 
 	// Juntamos el HEADER y el PAYLOAD del token
