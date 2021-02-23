@@ -12,13 +12,13 @@ import (
 var MongoCN = ConectarBD()
 
 // Localhost
-// var clientOptions = options.Client().ApplyURI("mongodb://root:123456@localhost:27017")
+var clientOptions = options.Client().ApplyURI("mongodb://root:123456@localhost:27017")
 
 // Digital Ocean
 // var clientOptions = options.Client().ApplyURI("mongodb://root:123456@134.209.66.168:27017")
 
 // mongodb.com
-var clientOptions = options.Client().ApplyURI("mongodb+srv://root:XDwJ2WgmXeLYCzUw@cluster0.lji8t.mongodb.net/twittor?retryWrites=true&w=majority")
+// var clientOptions = options.Client().ApplyURI("mongodb+srv://root:XDwJ2WgmXeLYCzUw@cluster0.lji8t.mongodb.net/twittor?retryWrites=true&w=majority")
 
 // ConectarBD conecta a la base de datos
 func ConectarBD() *mongo.Client {
