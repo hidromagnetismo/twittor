@@ -162,7 +162,7 @@ Content-Type: application/json
 @userID = 602d7456c5053e97fdca47c0
 
 ### Ver Perfil
-GET {{__URL__}}/verperfil?id={{userID}}
+GET {{__URL__}}/verPerfil?id={{userID}}
 Content-Type: application/json
 Authorization: Bearer{{token}}
 
@@ -176,6 +176,43 @@ Authorization: Bearer{{token}}
 
 
 
+
+# 88b           d88                        88  88     ad88  88                                      
+# 888b         d888                        88  ""    d8"    ""                                      
+# 88`8b       d8'88                        88        88                                             
+# 88 `8b     d8' 88   ,adPPYba,    ,adPPYb,88  88  MM88MMM  88   ,adPPYba,  ,adPPYYba,  8b,dPPYba,  
+# 88  `8b   d8'  88  a8"     "8a  a8"    `Y88  88    88     88  a8"     ""  ""     `Y8  88P'   "Y8  
+# 88   `8b d8'   88  8b       d8  8b       88  88    88     88  8b          ,adPPPPP88  88          
+# 88    `888'    88  "8a,   ,a8"  "8a,   ,d88  88    88     88  "8a,   ,aa  88,    ,88  88          
+# 88     `8'     88   `"YbbdP"'    `"8bbdP"Y8  88    88     88   `"Ybbd8"'  `"8bbdP"Y8  88          
+                                                                                                  
+                                                                                                  
+                                                                                                  
+# 88888888ba                             ad88  88  88                                               
+# 88      "8b                           d8"    ""  88                                               
+# 88      ,8P                           88         88                                               
+# 88aaaaaa8P'  ,adPPYba,  8b,dPPYba,  MM88MMM  88  88                                               
+# 88""""""'   a8P_____88  88P'   "Y8    88     88  88                                               
+# 88          8PP"""""""  88            88     88  88                                               
+# 88          "8b,   ,aa  88            88     88  88                                               
+# 88           `"Ybbd8"'  88            88     88  88                                               
+
+### Modificar Perfil
+PUT {{__URL__}}/modificarPerfil
+Content-Type: application/json
+Authorization: Bearer{{token}}
+
+{
+    "nombre": "Pablo {{$timestamp}}",
+    "apellidos": "Tilotta",
+    "fechaNacimiento": "1970-06-30T00:00:00Z",
+    "banner": "",
+    "ubicacion": "Ciudad Autónoma de Buenos Aires",
+    "biografia": "Profesional de los BITs, Analista Funcional SR, Programador experto desde hace mas de 31 años. Instructor de UDEMY y apasionado de la informática. #UDEMY",
+    "sitioWeb": "https://www.pablotilotta.com"
+}
+
+###
 
 
 

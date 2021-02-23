@@ -2,17 +2,18 @@
 	"version": 1,
 	"collections": [
 		{
-			"id": "f3a51eae-6f2c-41a7-b686-ec260d395acc",
-			"uid": "0-f3a51eae-6f2c-41a7-b686-ec260d395acc",
+			"id": "134628c7-d5d4-4f07-9769-28a9ee22943c",
+			"uid": "0-134628c7-d5d4-4f07-9769-28a9ee22943c",
 			"name": "Twittor",
 			"description": "Curso BackEnd en Go",
 			"auth": null,
 			"events": null,
 			"variables": [],
 			"order": [
-				"50829d23-634b-46c2-9c61-7c0375a64ccd",
-				"daf5f096-64ec-4fab-93b4-7b17bdc9d9f4",
-				"7de755e1-13be-41fa-84a7-c52f2dbfa67c"
+				"7a083765-a2d0-45f4-affc-0dc58c0ce8ad",
+				"8b8079c9-5d97-45a1-abf3-2a45a7f99ce5",
+				"9f488ec6-ff94-4637-aefd-83c810c953f1",
+				"f6e37b94-62c3-4be3-9c1e-fbec0860ae8a"
 			],
 			"folders_order": [],
 			"protocolProfileBehavior": {},
@@ -20,8 +21,8 @@
 			"folders": [],
 			"requests": [
 				{
-					"id": "50829d23-634b-46c2-9c61-7c0375a64ccd",
-					"uid": "0-50829d23-634b-46c2-9c61-7c0375a64ccd",
+					"id": "7a083765-a2d0-45f4-affc-0dc58c0ce8ad",
+					"uid": "0-7a083765-a2d0-45f4-affc-0dc58c0ce8ad",
 					"name": "Registro",
 					"url": "{{__URL__}}/registro",
 					"description": null,
@@ -42,16 +43,69 @@
 					"folder": null,
 					"currentHelper": null,
 					"helperAttributes": null,
-					"collectionId": "f3a51eae-6f2c-41a7-b686-ec260d395acc",
+					"collectionId": "134628c7-d5d4-4f07-9769-28a9ee22943c",
 					"rawModeData": "{\n\t\"email\": \"pablot@registro.com\",\n\t\"password\": \"123456\",\n\t\"nombre\": \"Pablo\",\n\t\"apellidos\": \"Tilotta\",\n\t\"fechaNacimiento\": \"1970-06-30T00:00:00Z\"\n}",
 					"headers": "Content-Type: application/json\n",
 					"pathVariables": {}
 				},
 				{
-					"id": "7de755e1-13be-41fa-84a7-c52f2dbfa67c",
-					"uid": "0-7de755e1-13be-41fa-84a7-c52f2dbfa67c",
+					"id": "8b8079c9-5d97-45a1-abf3-2a45a7f99ce5",
+					"uid": "0-8b8079c9-5d97-45a1-abf3-2a45a7f99ce5",
+					"name": "Login",
+					"url": "{{__URL__}}/login",
+					"description": null,
+					"data": [],
+					"dataOptions": null,
+					"dataMode": "raw",
+					"headerData": [
+						{
+							"key": "Content-Type",
+							"value": "application/json"
+						}
+					],
+					"method": "POST",
+					"pathVariableData": [],
+					"queryParams": [],
+					"auth": null,
+					"events": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"id": "d9792151-501f-4e70-bbd1-cbb784bb6446",
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"id": "a2a26519-7e72-4f6b-ba33-7b9774f8a863",
+								"exec": [
+									"",
+									"pm.globals.set(\"__TOKEN__\", pm.response.json().token);",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"folder": null,
+					"preRequestScript": null,
+					"tests": "\npm.globals.set(\"__TOKEN__\", pm.response.json().token);\n",
+					"currentHelper": null,
+					"helperAttributes": null,
+					"collectionId": "134628c7-d5d4-4f07-9769-28a9ee22943c",
+					"rawModeData": "{\n\t\"email\": \"pablot@registro.com\",\n\t\"password\": \"123456\"\n}",
+					"headers": "Content-Type: application/json\n",
+					"pathVariables": {}
+				},
+				{
+					"id": "9f488ec6-ff94-4637-aefd-83c810c953f1",
+					"uid": "0-9f488ec6-ff94-4637-aefd-83c810c953f1",
 					"name": "Ver Perfil",
-					"url": "{{__URL__}}/verperfil?id={{__USER_ID__}}",
+					"url": "{{__URL__}}/verPerfil?id={{__USER_ID__}}",
 					"description": null,
 					"data": null,
 					"dataOptions": null,
@@ -82,7 +136,7 @@
 						{
 							"listen": "prerequest",
 							"script": {
-								"id": "c46c23b9-4606-4da8-824c-ba54aa8bc3fd",
+								"id": "dfa24069-ca3e-4bc2-9495-95c1e32eaa2b",
 								"exec": [
 									""
 								],
@@ -95,15 +149,15 @@
 					"tests": null,
 					"currentHelper": null,
 					"helperAttributes": null,
-					"collectionId": "f3a51eae-6f2c-41a7-b686-ec260d395acc",
+					"collectionId": "134628c7-d5d4-4f07-9769-28a9ee22943c",
 					"headers": "Content-Type: application/json\nAuthorization: Bearer{{__TOKEN__}}\n",
 					"pathVariables": {}
 				},
 				{
-					"id": "daf5f096-64ec-4fab-93b4-7b17bdc9d9f4",
-					"uid": "0-daf5f096-64ec-4fab-93b4-7b17bdc9d9f4",
-					"name": "Login",
-					"url": "{{__URL__}}/login",
+					"id": "f6e37b94-62c3-4be3-9c1e-fbec0860ae8a",
+					"uid": "0-f6e37b94-62c3-4be3-9c1e-fbec0860ae8a",
+					"name": "Modificar Perfil",
+					"url": "{{__URL__}}/modificarPerfil",
 					"description": null,
 					"data": [],
 					"dataOptions": null,
@@ -112,9 +166,13 @@
 						{
 							"key": "Content-Type",
 							"value": "application/json"
+						},
+						{
+							"key": "Authorization",
+							"value": "Bearer{{__TOKEN__}}"
 						}
 					],
-					"method": "POST",
+					"method": "PUT",
 					"pathVariableData": [],
 					"queryParams": [],
 					"auth": null,
@@ -122,8 +180,10 @@
 						{
 							"listen": "prerequest",
 							"script": {
-								"id": "c22e0398-4b11-46aa-8573-fdd71a8ee7e9",
+								"id": "14c6db05-eece-4ca2-a0bc-edaabaffc53d",
 								"exec": [
+									"",
+									"pm.environment.set(\"__TIME__\", parseInt(Date.now()/1000));",
 									""
 								],
 								"type": "text/javascript"
@@ -132,22 +192,22 @@
 						{
 							"listen": "test",
 							"script": {
-								"id": "a935155e-1bf8-4e59-b24f-479ebfe91716",
+								"id": "859531b3-41fe-41eb-9e81-859d7c777246",
 								"exec": [
-									"pm.globals.set(\"__TOKEN__\", pm.response.json().token);"
+									""
 								],
 								"type": "text/javascript"
 							}
 						}
 					],
 					"folder": null,
-					"preRequestScript": null,
-					"tests": "pm.globals.set(\"__TOKEN__\", pm.response.json().token);",
+					"preRequestScript": "\npm.environment.set(\"__TIME__\", parseInt(Date.now()/1000));\n",
+					"tests": null,
 					"currentHelper": null,
 					"helperAttributes": null,
-					"collectionId": "f3a51eae-6f2c-41a7-b686-ec260d395acc",
-					"rawModeData": "{\n\t\"email\": \"pablot@registro.com\",\n\t\"password\": \"123456\"\n}",
-					"headers": "Content-Type: application/json\n",
+					"collectionId": "134628c7-d5d4-4f07-9769-28a9ee22943c",
+					"rawModeData": "{\n    \"nombre\": \"Pablo {{__TIME__}}\",\n    \"apellidos\": \"Tilotta\",\n    \"fechaNacimiento\": \"1970-06-30T00:00:00Z\",\n    \"banner\": \"\",\n    \"ubicacion\": \"Ciudad Autónoma de Buenos Aires\",\n    \"biografia\": \"Profesional de los BITs, Analista Funcional SR, Programador experto desde hace mas de 31 años. Instructor de UDEMY y apasionado de la informática. #UDEMY\",\n    \"sitioWeb\": \"https://www.pablotilotta.com\"\n}",
+					"headers": "Content-Type: application/json\nAuthorization: Bearer{{__TOKEN__}}\n",
 					"pathVariables": {}
 				}
 			]
@@ -155,7 +215,33 @@
 	],
 	"environments": [
 		{
-			"id": "4b180521-f524-4319-b538-3c76397761b1",
+			"id": "7ba68e7b-b93d-41e7-af5f-e5253d1edcbe",
+			"name": "Heroku",
+			"values": [
+				{
+					"key": "__URL__",
+					"value": "https://twittornat.herokuapp.com",
+					"enabled": true
+				},
+				{
+					"key": "__AUTH_URL__",
+					"value": "https://twittornat.herokuapp.com/login",
+					"enabled": true
+				},
+				{
+					"key": "__USER_ID__",
+					"value": "602d7456c5053e97fdca47c0",
+					"enabled": true
+				},
+				{
+					"key": "__TIME__",
+					"value": "1614039558",
+					"enabled": true
+				}
+			]
+		},
+		{
+			"id": "cbc7fc57-e08d-4f80-a507-5bff0186d4b6",
 			"name": "Local",
 			"values": [
 				{
@@ -172,26 +258,10 @@
 					"key": "__USER_ID__",
 					"value": "602d7456c5053e97fdca47c0",
 					"enabled": true
-				}
-			]
-		},
-		{
-			"id": "bfc567e0-01a7-4016-8343-82d23276b423",
-			"name": "Heroku",
-			"values": [
-				{
-					"key": "__URL__",
-					"value": "https://twittornat.herokuapp.com",
-					"enabled": true
 				},
 				{
-					"key": "__AUTH_URL__",
-					"value": "https://twittornat.herokuapp.com/login",
-					"enabled": true
-				},
-				{
-					"key": "__USER_ID__",
-					"value": "602d7456c5053e97fdca47c0",
+					"key": "__TIME__",
+					"value": "1614039558",
 					"enabled": true
 				}
 			]
