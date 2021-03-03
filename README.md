@@ -10,6 +10,21 @@
 {use admin}
 {db.createUser({ user:"root", pwd: "123456", roles:["clusterAdmin","readAnyDatabase","readWriteAnyDatabase","userAdminAnyDatabase","dbAdminAnyDatabase"] });}
 
+ó Crear Base de datos y usuario:
+
+{use myWebStore}
+{
+
+db.createUser(
+   {
+      user: "root",
+      pwd: "123456",
+      roles: [ { role: "readWrite", db: "myWebStore" } ]
+   }
+)
+
+}
+
 Ctrl+D
 
 {code /etc/mongod.conf}:
