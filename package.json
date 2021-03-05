@@ -1,0 +1,21 @@
+{
+  "name": "twittor",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "dev": "go run main.go",
+    "test": "jest --watch",
+    "prod": "go build main.go; ./main"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "jest": "^26.6.3",
+    "jsonwebtoken": "^8.5.1",
+    "jwt-decode": "^3.1.2",
+    "mongodb": "^3.6.4",
+    "puppeteer": "^7.1.0"
+  }
+}
