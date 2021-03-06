@@ -2,7 +2,7 @@
 // import test from 'jest';
 // import puppeteer from 'puppeteer';
 const { GET, POST, PUT } = require('./src/restClientPuppeteer');
-let __URL__, __DB__, headers, body, responseText, responseJSON;
+let __URL__, __DB__, Headers, Body, ResponseText, ResponseJSON;
 
 async function db () {
     try {
@@ -127,29 +127,29 @@ describe('Endpoint POST /registro, registro de usuario', () => {
     it('Default', async () => {
 
         // Enviando peticion 
-        headers = {
+        Headers = {
             'Content-Type': 'application/json'
         }
         const date = parseInt(Date.now());
         const email = `pablot${date}@registro.com`;
-        body = {
+        Body = {
             "email": email,
             "password": "123456",
             "nombre": `Pablo ${date}`,
             "apellidos": `Tilotta ${date}`,
             "fechaNacimiento": "1970-06-30T00:00:00Z"
         }
-        responseText = await POST(`${__URL__}/registro`, headers, body);
+        ResponseText = await POST(`${__URL__}/registro`, Headers, Body);
 
         // Verificando que el registro se haya realizado en la base de datos
-        const db_result = await (await db()).collection('usuarios').findOne({email: email});
-        expect(db_result.email).toBe(email);
+        const DB_usuario = await (await db()).collection('usuarios').findOne({email: email});
+        expect(DB_usuario.email).toBe(email);
 
         // Volviendo a registrar el mismo usuario
-        responseText = await POST(`${__URL__}/registro`, headers, body);
+        ResponseText = await POST(`${__URL__}/registro`, Headers, Body);
 
         // // Chequeando respuesta
-        expect(responseText).toContain('Ya existe un usuario registrado con ese email');
+        expect(ResponseText).toContain('Ya existe un usuario registrado con ese email');
     
     });
 
@@ -164,6 +164,64 @@ describe('Endpoint POST /registro, registro de usuario', () => {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+async function registerAndLogin() {
+    // Creando el usuario
+    const date = parseInt(Date.now());
+    const email = `pablot${date}@registro.com`;
+    const password = `123456_${date}`;
+
+    // Registrando/guardando el usuario en MongoDB
+    Headers = {
+        'Content-Type': 'application/json'
+    }
+    Body = {
+        "email": email,
+        "password": password,
+        "nombre": `Pablo ${date}`,
+        "apellidos": `Tilotta ${date}`,
+        "fechaNacimiento": "1970-06-30T00:00:00Z"
+    }
+    ResponseText = await POST(`${__URL__}/registro`, Headers, Body);
+
+    // Verificando que el registro se haya realizado en la base de datos
+    const DB_usuario = await (await db()).collection('usuarios').findOne({email: email});
+    expect(DB_usuario.email).toBe(email);
+
+    // Realizamos el login con el usuario previamente registrado/guardado
+    Headers = {
+        'Content-Type': 'application/json'
+    }
+    Body = {
+        email,
+        password
+    }
+    ResponseText = await POST(`${__URL__}/login`, Headers, Body);
+    ResponseJSON = JSON.parse(ResponseText);
+
+    // Chequeando respuesta
+    // expect(ResponseJSON.token).toBeDefined();
+    expect(ResponseJSON.token).toBeDefined();
+
+    const token_decoded = jwt_decode(ResponseJSON.token);
+
+    // Chequeando integridad del token
+    expect(token_decoded.email).toBe(email);
+    expect(token_decoded.email).toBe(DB_usuario.email);
+
+    return {email, DB_usuario, ResponseJSON};
+}
 
 
 // 88                                    88               
@@ -184,49 +242,7 @@ describe('Endpoint POST /login, login', () => {
     //.only
     //.skip
     it('Default', async () => {
-        
-        // Creando el usuario
-        const date = parseInt(Date.now());
-        const email = `pablot${date}@registro.com`;
-        const password = `123456_${date}`;
-        
-        // Registrando/guardando el usuario en MongoDB
-        headers = {
-            'Content-Type': 'application/json'
-        }
-        body = {
-            "email": email,
-            "password": password,
-            "nombre": `Pablo ${date}`,
-            "apellidos": `Tilotta ${date}`,
-            "fechaNacimiento": "1970-06-30T00:00:00Z"
-        }
-        responseText = await POST(`${__URL__}/registro`, headers, body);
-
-        // Verificando que el registro se haya realizado en la base de datos
-        const db_result = await (await db()).collection('usuarios').findOne({email: email});
-        expect(db_result.email).toBe(email);
-
-        // Realizamos el login con el usuario previamente registrado/guardado
-        headers = {
-            'Content-Type': 'application/json'
-        }
-        body = {
-            email,
-            password
-        }
-        responseText = await POST(`${__URL__}/login`, headers, body);
-        responseJSON = JSON.parse(responseText);
-
-        // Chequeando respuesta
-        expect(responseJSON.token).toBeDefined();
-
-        const token_decoded = jwt_decode(responseJSON.token);
-
-        // Chequeando integridad del token
-        expect(token_decoded.email).toBe(email);
-        expect(token_decoded.email).toBe(db_result.email);
-
+        await registerAndLogin();
     });
 
 
@@ -235,20 +251,20 @@ describe('Endpoint POST /login, login', () => {
     //.skip
     it("Respuesta para usuario no resgistrado", async () => {
         
-        headers = {
+        Headers = {
             'Content-Type': 'application/json'
         }
 
         const __NO_EXIST__ = 'no@existo.tld';
 
-        body = {
+        Body = {
             email: __NO_EXIST__,
             password: '123'
         }
 
-        responseText = await POST(`${__URL__}/login`, headers, body);
+        ResponseText = await POST(`${__URL__}/login`, Headers, Body);
         
-        expect(responseText).toContain("Usuario y/o Contraseña inválidos");
+        expect(ResponseText).toContain("Usuario y/o Contraseña inválidos");
 
     });
 
@@ -264,38 +280,38 @@ describe('Endpoint POST /login, login', () => {
         const password = `contraseña_correcta`;
         
         // Registrando/guardando el usuario en MongoDB
-        headers = {
+        Headers = {
             'Content-Type': 'application/json'
         }
-        body = {
+        Body = {
             "email": email,
             "password": password,
             "nombre": `Pablo ${date}`,
             "apellidos": `Tilotta ${date}`,
             "fechaNacimiento": "1970-06-30T00:00:00Z"
         }
-        responseText = await POST(`${__URL__}/registro`, headers, body);
+        ResponseText = await POST(`${__URL__}/registro`, Headers, Body);
 
         // Verificando que el registro se haya realizado en la base de datos
-        const db_result = await (await db()).collection('usuarios').findOne({email: email});
-        expect(db_result.email).toBe(email);
+        const DB_usuario = await (await db()).collection('usuarios').findOne({email: email});
+        expect(DB_usuario.email).toBe(email);
 
         // Realizamos el login con el usuario previamente registrado/guardado
-        headers = {
+        Headers = {
             'Content-Type': 'application/json'
         }
 
         const __INCORRECT__ = 'contraseña_incorrecta';
         
-        body = {
+        Body = {
             email,
             password: __INCORRECT__
         }
         
-        responseText = await POST(`${__URL__}/login`, headers, body);
+        ResponseText = await POST(`${__URL__}/login`, Headers, Body);
 
         // Chequenado respuesta
-        expect(responseText).toContain('Usuario y/o Contraseña inválidos');
+        expect(ResponseText).toContain('Usuario y/o Contraseña inválidos');
         
     });
     
@@ -355,72 +371,32 @@ describe('Endpoint GET /verPerfil, perfil del usuario luego de haberse logueado'
     //.skip
     it('Default', async () => {
         
-        // Creando el usuario
-        const date = parseInt(Date.now());
-        const email = `pablot${date}@registro.com`;
-        const password = `123456_${date}`;
-        
-        // Registrando/guardando el usuario en MongoDB
-        headers = {
-            'Content-Type': 'application/json'
-        }
-        body = {
-            "email": email,
-            "password": password,
-            "nombre": `Pablo ${date}`,
-            "apellidos": `Tilotta ${date}`,
-            "fechaNacimiento": "1970-06-30T00:00:00Z"
-        }
-        responseText = await POST(`${__URL__}/registro`, headers, body);
-        
-        // Verificando que el registro se haya realizado en la base de datos
-        const db_result = await (await db()).collection('usuarios').findOne({email: email});
-        expect(db_result.email).toBe(email);
-
-        // Realizamos el login con el usuario previamente registrado/guardado
-        headers = {
-            'Content-Type': 'application/json'
-        }
-        body = {
-            email,
-            password
-        }
-        responseText = await POST(`${__URL__}/login`, headers, body);
-        responseJSON = JSON.parse(responseText);
-        
-        // Chequeando respuesta
-        expect(responseJSON.token).toBeDefined();
-        
-        const token_decoded = jwt_decode(responseJSON.token);
-        
-        // Chequeando integridad del token
-        expect(token_decoded.email).toBe(email);
-        expect(token_decoded.email).toBe(db_result.email);
+        let {email, DB_usuario, ResponseJSON} = await registerAndLogin();
         
         // Realizando petición con el token obtenido
-        headers = {
+        Headers = {
             'Content-Type': 'application/json',
-            'Authorization': `Bearer${responseJSON.token}`
+            'Authorization': `Bearer${ResponseJSON.token}`
         }
         
         // Si no se esta enviando el ID del usuario
-        responseText = await GET(`${__URL__}/verPerfil`, headers);
+        ResponseText = await GET(`${__URL__}/verPerfil`, Headers);
         
         // la respuesta deberia ser:
-        expect(responseText).toContain('Debe enviar el parámetro ID');
+        expect(ResponseText).toContain('Debe enviar el parámetro ID');
         
-        responseText = await GET(`${__URL__}/verPerfil?id=${db_result._id}`, headers);
-        responseJSON = JSON.parse(responseText);
+        ResponseText = await GET(`${__URL__}/verPerfil?id=${DB_usuario._id}`, Headers);
+        ResponseJSON = JSON.parse(ResponseText);
         
         // Confirmando respuesta
-        expect(responseJSON.id).toBeDefined();
-        expect(responseJSON.id).toBe(db_result._id.toString());
-        expect(responseJSON.email).toBeDefined();
-        expect(responseJSON.email).toBe(email);
-        expect(responseJSON.email).toBe(db_result.email);
+        expect(ResponseJSON.id).toBeDefined();
+        expect(ResponseJSON.id).toBe(DB_usuario._id.toString());
+        expect(ResponseJSON.email).toBeDefined();
+        expect(ResponseJSON.email).toBe(email);
+        expect(ResponseJSON.email).toBe(DB_usuario.email);
         
         // importante
-        expect(responseJSON.password).toBeUndefined();
+        expect(ResponseJSON.password).toBeUndefined();
         
     });
     
@@ -467,103 +443,145 @@ describe('Endpoint GET /modificarPerfil, modificando el perfil del usuario', () 
     //.skip
     it('Default', async () => {
         
-        // Creando el usuario
-        const date = parseInt(Date.now());
-        const email = `pablot${date}@registro.com`;
-        const password = `123456_${date}`;
-        
-        // Registrando/guardando el usuario en MongoDB
-        headers = {
-            'Content-Type': 'application/json'
-        }
-        body = {
-            "email": email,
-            "password": password,
-            "nombre": `Pablo ${date}`,
-            "apellidos": `Tilotta ${date}`,
-            "fechaNacimiento": "1970-06-30T00:00:00Z"
-        }
-        responseText = await POST(`${__URL__}/registro`, headers, body);
-        
-        // Verificando que el registro se haya realizado en la base de datos
-        const db_result = await (await db()).collection('usuarios').findOne({email: email});
-        expect(db_result.email).toBe(email);
-
-        // Realizamos el login con el usuario previamente registrado/guardado
-        headers = {
-            'Content-Type': 'application/json'
-        }
-        body = {
-            email,
-            password
-        }
-        responseText = await POST(`${__URL__}/login`, headers, body);
-        responseJSON = JSON.parse(responseText);
-        
-        // Chequeando respuesta
-        expect(responseJSON.token).toBeDefined();
-        
-        const token_decoded = jwt_decode(responseJSON.token);
-        
-        // Chequeando integridad del token
-        expect(token_decoded.email).toBe(email);
-        expect(token_decoded.email).toBe(db_result.email);
+        let {email, DB_usuario, ResponseJSON} = await registerAndLogin();
         
         // Realizando petición con el token obtenido
-        headers = {
+        Headers = {
             'Content-Type': 'application/json',
-            'Authorization': `Bearer${responseJSON.token}`
+            'Authorization': `Bearer${ResponseJSON.token}`
         }
 
         const ubicacion = "Ciudad Autónoma de Buenos Aires";
         const biografia = "Profesional de los BITs, Analista Funcional SR, Programador experto desde hace mas de 31 años. Instructor de UDEMY y apasionado de la informática. #UDEMY";
         const sitioWeb = "https://www.pablotilotta.com";
 
-        body = {
+        Body = {
             ubicacion,
             biografia,
             sitioWeb
         }
 
-        responseText = await PUT(`${__URL__}/modificarPerfil`, headers, body);
+        ResponseText = await PUT(`${__URL__}/modificarPerfil`, Headers, Body);
 
         // Traemos la actualización de la base de datos
-        const db_result_update = await (await db()).collection('usuarios').findOne({email: email});
+        const DB_usuario_update = await (await db()).collection('usuarios').findOne({email: email});
 
 
         // Tayendose el perfil luego de haber actualizado
-        headers = {
+        Headers = {
             'Content-Type': 'application/json',
-            'Authorization': `Bearer${responseJSON.token}`
+            'Authorization': `Bearer${ResponseJSON.token}`
         }
 
-        responseText = await GET(`${__URL__}/verPerfil?id=${db_result._id}`, headers);
-        responseJSON = JSON.parse(responseText);
+        ResponseText = await GET(`${__URL__}/verPerfil?id=${DB_usuario._id}`, Headers);
+        ResponseJSON = JSON.parse(ResponseText);
 
         // Confirmando respuesta
-        expect(responseJSON.id).toBeDefined();
-        expect(responseJSON.id).toBe(db_result_update._id.toString());
+        expect(ResponseJSON.id).toBeDefined();
+        expect(ResponseJSON.id).toBe(DB_usuario_update._id.toString());
 
-        expect(responseJSON.email).toBeDefined();
-        expect(responseJSON.email).toBe(email);
-        expect(responseJSON.email).toBe(db_result_update.email);
+        expect(ResponseJSON.email).toBeDefined();
+        expect(ResponseJSON.email).toBe(email);
+        expect(ResponseJSON.email).toBe(DB_usuario_update.email);
 
-        expect(responseJSON.ubicacion).toBeDefined();
-        expect(responseJSON.ubicacion).toBe(ubicacion);
-        expect(responseJSON.ubicacion).toBe(db_result_update.ubicacion);
+        expect(ResponseJSON.ubicacion).toBeDefined();
+        expect(ResponseJSON.ubicacion).toBe(ubicacion);
+        expect(ResponseJSON.ubicacion).toBe(DB_usuario_update.ubicacion);
 
-        expect(responseJSON.biografia).toBeDefined();
-        expect(responseJSON.biografia).toBe(biografia);
-        expect(responseJSON.biografia).toBe(db_result_update.biografia);
+        expect(ResponseJSON.biografia).toBeDefined();
+        expect(ResponseJSON.biografia).toBe(biografia);
+        expect(ResponseJSON.biografia).toBe(DB_usuario_update.biografia);
 
-        expect(responseJSON.sitioWeb).toBeDefined();
-        expect(responseJSON.sitioWeb).toBe(sitioWeb);
-        expect(responseJSON.sitioWeb).toBe(db_result_update.sitioWeb);
+        expect(ResponseJSON.sitioWeb).toBeDefined();
+        expect(ResponseJSON.sitioWeb).toBe(sitioWeb);
+        expect(ResponseJSON.sitioWeb).toBe(DB_usuario_update.sitioWeb);
         
         // importante
-        expect(responseJSON.password).toBeUndefined();
+        expect(ResponseJSON.password).toBeUndefined();
         
     });
     
 });
+
+
+
+
+
+
+
+
+
+
+
+
+
+// 88888888ba     ,ad8888ba,     ad88888ba  888888888888                     
+// 88      "8b   d8"'    `"8b   d8"     "8b      88                          
+// 88      ,8P  d8'        `8b  Y8,              88                          
+// 88aaaaaa8P'  88          88  `Y8aaaaa,        88                          
+// 88""""""'    88          88    `"""""8b,      88                          
+// 88           Y8,        ,8P          `8b      88                          
+// 88            Y8a.    .a8P   Y8a     a8P      88                          
+// 88             `"Y8888Y"'     "Y88888P"       88                          
+                                                                          
+                                                                          
+                                                                          
+//           d8                                                              
+//         ,8P'  ,d                                                   ,d     
+//        d8"    88                                                   88     
+//      ,8P'   MM88MMM  8b      db      d8   ,adPPYba,   ,adPPYba,  MM88MMM  
+//     d8"       88     `8b    d88b    d8'  a8P_____88  a8P_____88    88     
+//   ,8P'        88      `8b  d8'`8b  d8'   8PP"""""""  8PP"""""""    88     
+//  d8"          88,      `8bd8'  `8bd8'    "8b,   ,aa  "8b,   ,aa    88,    
+// 8P'           "Y888      YP      YP       `"Ybbd8"'   `"Ybbd8"'    "Y888  
+
+//      .only
+//      .skip
+describe('Endpoint POST /tweet, insertar un Tweet', () => {
+
+    //.only
+    //.skip
+    it('Default', async () => {
+
+        let {email, DB_usuario, ResponseJSON} = await registerAndLogin();
+
+        // Enviando peticion 
+        Headers = {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer${ResponseJSON.token}`
+        }
+        const date = parseInt(Date.now());
+        const mensaje = `Es es mi primer tweet ${date}`;
+        Body = {
+            mensaje
+        }
+        ResponseText = await POST(`${__URL__}/tweet`, Headers, Body);
+
+        const DB_tweet = await (await db()).collection('tweet').findOne({mensaje: mensaje});
+        
+        // Verificando que se haya registrado en la base de datos
+        expect(DB_tweet.mensaje).toBe(mensaje);
+        
+        // Checando el usuario dueño del tweet:
+        expect(DB_tweet.userid).toBe(DB_usuario._id.toString());
+
+    });
+
+});
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
