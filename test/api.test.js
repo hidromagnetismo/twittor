@@ -4,6 +4,18 @@
 const { GET, POST, PUT } = require('./src/restClientPuppeteer');
 let __URL__, __DB__, Headers, Body, ResponseText, ResponseJSON;
 
+const { exec } = require('child_process');
+exec("ps aux | grep \"node_modules/puppeteer\" | grep -v grep | awk '{print $2}' | { while read PID; do kill -9 $PID; done }", (err, stdout, stderr) => {
+    if (err) {
+        //some err occurred
+        console.error(err)
+    } else {
+        // the *entire* stdout and stderr (buffered)
+        // console.log(`stdout: ${stdout}`);
+        // console.log(`stderr: ${stderr}`);
+    }
+});
+
 async function db () {
     try {
         const MongoClient = require('mongodb').MongoClient;
@@ -27,6 +39,7 @@ function sleep(milliseconds) {
 }
 
 sleep(500);
+jest.setTimeout( 60 *1000);
 
 const DecodeJWT = token => {
     try {
@@ -37,11 +50,14 @@ const DecodeJWT = token => {
 };
 
 const jwt_decode = require('jwt-decode');
+const faker = require('faker');
+const { ObjectId } = require('mongodb');
 
 
 
 
 const jwt = require('jsonwebtoken');
+const { getConsoleOutput } = require('@jest/console');
 // const config = require('../src/config');
 const secret = 'MastersDelDesarrollo_grupoDeFacebook'; // jwt/jwt.go
 
@@ -143,6 +159,7 @@ describe('Endpoint POST /registro, registro de usuario', () => {
 
         // Verificando que el registro se haya realizado en la base de datos
         const DB_usuario = await (await db()).collection('usuarios').findOne({email: email});
+        expect(DB_usuario._id).toBeDefined();
         expect(DB_usuario.email).toBe(email);
 
         // Volviendo a registrar el mismo usuario
@@ -563,7 +580,8 @@ describe('Endpoint POST /tweet, insertar un Tweet', () => {
         expect(DB_tweet.mensaje).toBe(mensaje);
         
         // Checando el usuario dueño del tweet:
-        expect(DB_tweet.userId).toBe(DB_usuario._id.toString());
+        expect(DB_tweet._userId).toBeDefined();
+        expect(DB_tweet._userId.toString()).toBe(DB_usuario._id.toString());
 
     });
 
@@ -573,6 +591,142 @@ describe('Endpoint POST /tweet, insertar un Tweet', () => {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+//   ,ad8888ba,   88888888888  888888888888                                  
+//  d8"'    `"8b  88                88                                       
+// d8'            88                88                                       
+// 88             88aaaaa           88                                       
+// 88      88888  88"""""           88                                       
+// Y8,        88  88                88                                       
+//  Y8a.    .a88  88                88                                       
+//   `"Y88888P"   88888888888       88                                       
+                                                                          
+                                                                          
+                                                                          
+//           d8                                                              
+//         ,8P'  ,d                                                   ,d     
+//        d8"    88                                                   88     
+//      ,8P'   MM88MMM  8b      db      d8   ,adPPYba,   ,adPPYba,  MM88MMM  
+//     d8"       88     `8b    d88b    d8'  a8P_____88  a8P_____88    88     
+//   ,8P'        88      `8b  d8'`8b  d8'   8PP"""""""  8PP"""""""    88     
+//  d8"          88,      `8bd8'  `8bd8'    "8b,   ,aa  "8b,   ,aa    88,    
+// 8P'           "Y888      YP      YP       `"Ybbd8"'   `"Ybbd8"'    "Y888  
+
+//      .only
+//      .skip
+describe('Endpoint GET /tweet, leer los tweets de un usuario', () => {
+    
+    //.only
+    //.skip
+    it('Default', async () => {
+        
+        // Registro y login para obtener el Token
+        let {email, DB_usuario, ResponseJSON} = await registerAndLogin();
+
+        const userId = DB_usuario._id.toString();
+        
+        const numero_tweets = 18;
+
+        // Rel
+        for (let i=0; i<numero_tweets; i++) {
+            await (await db()).collection('tweet').insertOne({
+                // _userId: DB_usuario._id,
+                _userId: ObjectId(userId),
+                mensaje: faker.lorem.paragraph()
+            });
+        }
+
+        // Enviando peticion 
+        Headers = {
+            'Content-Type': 'application/json',
+        }
+
+        ResponseText = await GET(`${__URL__}/tweet?userId=${userId}&limit=${numero_tweets}&page=1`, Headers);
+        ResponseJSON = JSON.parse(ResponseText);
+
+        expect(ResponseJSON.length).toBe(numero_tweets);
+        
+        for (let i=0; i<numero_tweets; i++) {
+            expect(ResponseJSON[i].userId).toBe(userId);
+            expect(ResponseJSON[i].mensaje).toBeDefined();
+            expect(ResponseJSON[i].fecha).toBeDefined();
+        }
+        
+        // Chequenado las posibles respuestas
+        
+        ResponseText = await GET(`${__URL__}/tweet?userId=${userId}&limit=${numero_tweets}&page=2`, Headers);
+        ResponseJSON = JSON.parse(ResponseText);
+        expect(ResponseJSON).toBeNull();
+        
+        ResponseText = await GET(`${__URL__}/tweet?userId=${userId}&limit=${numero_tweets}&page=0`, Headers);
+        expect(ResponseText).toContain("page debe ser mayor o igual a 1");        
+        
+        ResponseText = await GET(`${__URL__}/tweet?userId=${userId}&limit=${numero_tweets+1}&page=1`, Headers);
+        expect(ResponseText).toContain("limit debe estar comprendido entre 1 y 18");
+
+    });
+ 
+    
+    //.only
+    //.skip
+    it.skip('Paginación, NOTA: el test tarda mas de 20 segundos __SKIP__', async () => {
+        
+        // Registro y login para obtener el Token
+        let {email, DB_usuario, ResponseJSON} = await registerAndLogin();
+
+        const userId = DB_usuario._id.toString();
+        
+        const numero_tweets = 18;
+
+        // Rel
+        for (let i=0; i<numero_tweets; i++) {
+            await (await db()).collection('tweet').insertOne({
+                // _userId: DB_usuario._id,
+                _userId: ObjectId(userId),
+                mensaje: faker.lorem.paragraph()
+            });
+        }
+
+        // Enviando peticiones 
+        Headers = {
+            'Content-Type': 'application/json',
+        }
+
+        for (let j=1; j<=numero_tweets; j++) {
+            let limit = j;
+            let leftExpresion = ""
+            for (let i=1; i<=Math.ceil(numero_tweets/limit); i++) {
+                if (i*limit>numero_tweets) {
+                    let count = numero_tweets-(i-1)*limit;
+                    leftExpresion += ` + ${count}`;
+                    ResponseText = await GET(`${__URL__}/tweet?userId=${userId}&limit=${limit}&page=${i}`, Headers);
+                    ResponseJSON = JSON.parse(ResponseText);
+                    expect(ResponseJSON.length).toBe(count);
+                } else {
+                    leftExpresion += ` + ${limit}`;
+                    ResponseText = await GET(`${__URL__}/tweet?userId=${userId}&limit=${limit}&page=${i}`, Headers);
+                    ResponseJSON = JSON.parse(ResponseText);
+                    expect(ResponseJSON.length).toBe(limit);
+                }
+
+            }
+            console.log(`${leftExpresion} = ${numero_tweets}`);
+        }
+        
+    });
+
+});
 
 
 
