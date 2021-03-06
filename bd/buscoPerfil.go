@@ -27,6 +27,8 @@ func BuscoPerfil(ID string) (models.Usuario, error) {
 	}
 
 	err := col.FindOne(ctx, condicion).Decode(&perfil)
+	// Testing
+	// perfil.Password = ""
 	perfil.Password = ""
 	if err != nil {
 		fmt.Println("Registro no encontrado " + err.Error())
