@@ -11,6 +11,7 @@
 // "errors"
 // "strings"
 // "context"
+// "strconv"
 // "net/http"
 // "encoding/json"
 // "github.com/rs/cors"
@@ -82,11 +83,14 @@
 # Y8a.    .a8P  aa    ]8I  "8a,   ,a88  88,    ,88  88          88  "8a,   ,a8"         
 #  `"Y8888Y"'   `"YbbdP"'   `"YbbdP'Y8  `"8bbdP"Y8  88          88   `"YbbdP"'          
 
+@userID = 602d7456c5053e97fdca47c0
+
 ### Registro de usuario
 POST {{__URL__}}/registro
 Content-Type: application/json
 
 {
+	"id": "{{userID}}",
 	"email": "pablot@registro.com",
 	"password": "123456",
 	"nombre": "Pablo",
@@ -158,8 +162,6 @@ Content-Type: application/json
 # 88          8PP"""""""  88            88     88  88  
 # 88          "8b,   ,aa  88            88     88  88  
 # 88           `"Ybbd8"'  88            88     88  88  
-
-@userID = 602d7456c5053e97fdca47c0
 
 ### Ver Perfil
 GET {{__URL__}}/verPerfil?id={{userID}}
@@ -252,6 +254,41 @@ Authorization: Bearer{{token}}
 {
 	"mensaje": "Es es mi primer tweet {{$timestamp}}"
 }
+
+###
+
+
+
+
+
+
+
+
+
+
+#   ,ad8888ba,   88888888888  888888888888                                  
+#  d8"'    `"8b  88                88                                       
+# d8'            88                88                                       
+# 88             88aaaaa           88                                       
+# 88      88888  88"""""           88                                       
+# Y8,        88  88                88                                       
+#  Y8a.    .a88  88                88                                       
+#   `"Y88888P"   88888888888       88                                       
+                                                                          
+                                                                          
+                                                                          
+#           d8                                                              
+#         ,8P'  ,d                                                   ,d     
+#        d8"    88                                                   88     
+#      ,8P'   MM88MMM  8b      db      d8   ,adPPYba,   ,adPPYba,  MM88MMM  
+#     d8"       88     `8b    d88b    d8'  a8P_____88  a8P_____88    88     
+#   ,8P'        88      `8b  d8'`8b  d8'   8PP"""""""  8PP"""""""    88     
+#  d8"          88,      `8bd8'  `8bd8'    "8b,   ,aa  "8b,   ,aa    88,    
+# 8P'           "Y888      YP      YP       `"Ybbd8"'   `"Ybbd8"'    "Y888  
+
+### Obtener los Tweets de un usuario por su userId
+GET {{__URL__}}/tweet?userId={{userID}}&limit=18&page=1
+Content-Type: application/json
 
 ###
 
