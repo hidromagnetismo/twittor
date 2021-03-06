@@ -9,9 +9,9 @@ async function db () {
         const MongoClient = require('mongodb').MongoClient;
         const client = await MongoClient.connect(__DB__, {
             useNewUrlParser: true,
-            // useUnifiedTopology: true
+            useUnifiedTopology: true
         });
-        console.log('Testing MongoClient is conected');
+        // console.log('Testing MongoClient is conected');
         return client.db('twittor');
     } catch (e) {
         console.log(e);
@@ -161,5 +161,146 @@ describe('Endpoint POST /registro, registro de usuario', () => {
 
 
 
+
+
+
+
+
+// 88                                    88               
+// 88                                    ""               
+// 88                                                     
+// 88           ,adPPYba,    ,adPPYb,d8  88  8b,dPPYba,   
+// 88          a8"     "8a  a8"    `Y88  88  88P'   `"8a  
+// 88          8b       d8  8b       88  88  88       88  
+// 88          "8a,   ,a8"  "8a,   ,d88  88  88       88  
+// 88888888888  `"YbbdP"'    `"YbbdP"Y8  88  88       88  
+//                           aa,    ,88                   
+//                            "Y8bbdP"                    
+
+//      .only
+//      .skip
+describe('Endpoint POST /login, login', () => {
+
+    //.only
+    //.skip
+    it('Default', async () => {
+        
+        // Creando el usuario
+        const date = parseInt(Date.now()/1000);
+        const email = `pablot${date}@registro.com`;
+        const password = `123456_${date}`;
+        
+        // Registrando/guardando el usuario en MongoDB
+        headers = {
+            'Content-Type': 'application/json'
+        }
+        body = {
+            "email": email,
+            "password": password,
+            "nombre": `Pablo ${date}`,
+            "apellidos": `Tilotta ${date}`,
+            "fechaNacimiento": "1970-06-30T00:00:00Z"
+        }
+        responseText = await POST(`${__URL__}/registro`, headers, body);
+
+        // Verificando que el registro se haya realizado en la base de datos
+        const db_result = await (await db()).collection('usuarios').findOne({email: email});
+        expect(db_result.email).toBe(email);
+
+        // Realizamos el login con el usuario previamente registrado/guardado
+        headers = {
+            'Content-Type': 'application/json'
+        }
+        body = {
+            email,
+            password
+        }
+        responseText = await POST(`${__URL__}/login`, headers, body);
+        responseJSON = JSON.parse(responseText);
+
+        // Chequeando respuesta
+        expect(responseJSON.token).toBeDefined();
+
+        const token_decoded = jwt_decode(responseJSON.token);
+
+        // // Chequeando integridad de token
+        expect(token_decoded.email).toBe(email);
+        expect(token_decoded.email).toBe(db_result.email);
+
+    });
+
+
+
+    //.only
+    //.skip
+    it("Respuesta para usuario no resgistrado", async () => {
+        
+        headers = {
+            'Content-Type': 'application/json'
+        }
+
+        const __NO_EXIST__ = 'no@existo.tld';
+
+        body = {
+            email: __NO_EXIST__,
+            password: '123'
+        }
+
+        responseText = await POST(`${__URL__}/login`, headers, body);
+        
+        expect(responseText).toContain("Usuario y/o Contraseña inválidos");
+
+    });
+
+
+
+    //.only
+    //.skip
+    it('Respuesta para password incorrecto', async () => {
+    
+        // Creando el usuario
+        const date = parseInt(Date.now()/1000);
+        const email = `pablot${date}@registro.com`;
+        const password = `contraseña_correcta`;
+        
+        // Registrando/guardando el usuario en MongoDB
+        headers = {
+            'Content-Type': 'application/json'
+        }
+        body = {
+            "email": email,
+            "password": password,
+            "nombre": `Pablo ${date}`,
+            "apellidos": `Tilotta ${date}`,
+            "fechaNacimiento": "1970-06-30T00:00:00Z"
+        }
+        responseText = await POST(`${__URL__}/registro`, headers, body);
+
+        // Verificando que el registro se haya realizado en la base de datos
+        const db_result = await (await db()).collection('usuarios').findOne({email: email});
+        expect(db_result.email).toBe(email);
+
+        // Realizamos el login con el usuario previamente registrado/guardado
+        headers = {
+            'Content-Type': 'application/json'
+        }
+
+        const __INCORRECT__ = 'contraseña_incorrecta';
+        
+        body = {
+            email,
+            password: __INCORRECT__
+        }
+        
+        responseText = await POST(`${__URL__}/login`, headers, body);
+
+        // Chequenado respuesta
+        expect(responseText).toContain('Usuario y/o Contraseña inválidos');
+
+    });
+
+
+
+});
 
 
