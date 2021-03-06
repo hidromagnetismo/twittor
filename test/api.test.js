@@ -1,7 +1,7 @@
 
 // import test from 'jest';
 // import puppeteer from 'puppeteer';
-const { GET, POST } = require('./src/restClientPuppeteer');
+const { GET, POST, PUT } = require('./src/restClientPuppeteer');
 let __URL__, __DB__, headers, body, responseText, responseJSON;
 
 async function db () {
@@ -427,4 +427,143 @@ describe('Endpoint GET /verPerfil, perfil del usuario luego de haberse logueado'
 });
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+// 88b           d88                        88  88     ad88  88                                      
+// 888b         d888                        88  ""    d8"    ""                                      
+// 88`8b       d8'88                        88        88                                             
+// 88 `8b     d8' 88   ,adPPYba,    ,adPPYb,88  88  MM88MMM  88   ,adPPYba,  ,adPPYYba,  8b,dPPYba,  
+// 88  `8b   d8'  88  a8"     "8a  a8"    `Y88  88    88     88  a8"     ""  ""     `Y8  88P'   "Y8  
+// 88   `8b d8'   88  8b       d8  8b       88  88    88     88  8b          ,adPPPPP88  88          
+// 88    `888'    88  "8a,   ,a8"  "8a,   ,d88  88    88     88  "8a,   ,aa  88,    ,88  88          
+// 88     `8'     88   `"YbbdP"'    `"8bbdP"Y8  88    88     88   `"Ybbd8"'  `"8bbdP"Y8  88          
+                                                                                                  
+                                                                                                  
+                                                                                                  
+// 88888888ba                             ad88  88  88                                               
+// 88      "8b                           d8"    ""  88                                               
+// 88      ,8P                           88         88                                               
+// 88aaaaaa8P'  ,adPPYba,  8b,dPPYba,  MM88MMM  88  88                                               
+// 88""""""'   a8P_____88  88P'   "Y8    88     88  88                                               
+// 88          8PP"""""""  88            88     88  88                                               
+// 88          "8b,   ,aa  88            88     88  88                                               
+// 88           `"Ybbd8"'  88            88     88  88                                               
+
+//      .only
+//      .skip
+describe('Endpoint GET /modificarPerfil, modificando el perfil del usuario', () => {
+    
+    //.only
+    //.skip
+    it('Default', async () => {
+        
+        // Creando el usuario
+        const date = parseInt(Date.now());
+        const email = `pablot${date}@registro.com`;
+        const password = `123456_${date}`;
+        
+        // Registrando/guardando el usuario en MongoDB
+        headers = {
+            'Content-Type': 'application/json'
+        }
+        body = {
+            "email": email,
+            "password": password,
+            "nombre": `Pablo ${date}`,
+            "apellidos": `Tilotta ${date}`,
+            "fechaNacimiento": "1970-06-30T00:00:00Z"
+        }
+        responseText = await POST(`${__URL__}/registro`, headers, body);
+        
+        // Verificando que el registro se haya realizado en la base de datos
+        const db_result = await (await db()).collection('usuarios').findOne({email: email});
+        expect(db_result.email).toBe(email);
+
+        // Realizamos el login con el usuario previamente registrado/guardado
+        headers = {
+            'Content-Type': 'application/json'
+        }
+        body = {
+            email,
+            password
+        }
+        responseText = await POST(`${__URL__}/login`, headers, body);
+        responseJSON = JSON.parse(responseText);
+        
+        // Chequeando respuesta
+        expect(responseJSON.token).toBeDefined();
+        
+        const token_decoded = jwt_decode(responseJSON.token);
+        
+        // Chequeando integridad del token
+        expect(token_decoded.email).toBe(email);
+        expect(token_decoded.email).toBe(db_result.email);
+        
+        // Realizando petición con el token obtenido
+        headers = {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer${responseJSON.token}`
+        }
+
+        const ubicacion = "Ciudad Autónoma de Buenos Aires";
+        const biografia = "Profesional de los BITs, Analista Funcional SR, Programador experto desde hace mas de 31 años. Instructor de UDEMY y apasionado de la informática. #UDEMY";
+        const sitioWeb = "https://www.pablotilotta.com";
+
+        body = {
+            ubicacion,
+            biografia,
+            sitioWeb
+        }
+
+        responseText = await PUT(`${__URL__}/modificarPerfil`, headers, body);
+
+        // Traemos la actualización de la base de datos
+        const db_result_update = await (await db()).collection('usuarios').findOne({email: email});
+
+
+        // Tayendose el perfil luego de haber actualizado
+        headers = {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer${responseJSON.token}`
+        }
+
+        responseText = await GET(`${__URL__}/verPerfil?id=${db_result._id}`, headers);
+        responseJSON = JSON.parse(responseText);
+
+        // Confirmando respuesta
+        expect(responseJSON.id).toBeDefined();
+        expect(responseJSON.id).toBe(db_result_update._id.toString());
+
+        expect(responseJSON.email).toBeDefined();
+        expect(responseJSON.email).toBe(email);
+        expect(responseJSON.email).toBe(db_result_update.email);
+
+        expect(responseJSON.ubicacion).toBeDefined();
+        expect(responseJSON.ubicacion).toBe(ubicacion);
+        expect(responseJSON.ubicacion).toBe(db_result_update.ubicacion);
+
+        expect(responseJSON.biografia).toBeDefined();
+        expect(responseJSON.biografia).toBe(biografia);
+        expect(responseJSON.biografia).toBe(db_result_update.biografia);
+
+        expect(responseJSON.sitioWeb).toBeDefined();
+        expect(responseJSON.sitioWeb).toBe(sitioWeb);
+        expect(responseJSON.sitioWeb).toBe(db_result_update.sitioWeb);
+        
+        // importante
+        expect(responseJSON.password).toBeUndefined();
+        
+    });
+    
+});
 
