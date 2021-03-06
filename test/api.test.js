@@ -563,7 +563,7 @@ describe('Endpoint POST /tweet, insertar un Tweet', () => {
         expect(DB_tweet.mensaje).toBe(mensaje);
         
         // Checando el usuario dueño del tweet:
-        expect(DB_tweet.userid).toBe(DB_usuario._id.toString());
+        expect(DB_tweet.userId).toBe(DB_usuario._id.toString());
 
     });
 
