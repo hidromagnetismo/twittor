@@ -39,7 +39,7 @@ function sleep(milliseconds) {
 }
 
 sleep(500);
-jest.setTimeout( 60 *1000);
+jest.setTimeout( 5 *60*1000);
 
 const DecodeJWT = token => {
     try {
@@ -80,8 +80,8 @@ const secret = 'MastersDelDesarrollo_grupoDeFacebook'; // jwt/jwt.go
                                                     
 // 888888888888                          888888888888  
 
-__DB__ = 'mongodb+srv://root:XWBXgUne3U2OmMax@cluster0.lji8t.mongodb.net/twittor?retryWrites=true&w=majority';
 __DB__ = 'mongodb://root:123456@localhost:27017';
+__DB__ = 'mongodb+srv://root:XWBXgUne3U2OmMax@cluster0.lji8t.mongodb.net/twittor?retryWrites=true&w=majority';
 
 
 
@@ -100,8 +100,8 @@ __DB__ = 'mongodb://root:123456@localhost:27017';
                                                                 
 // 888888888888                                      888888888888  
 
-__URL__ = 'https://twittornat.herokuapp.com';
 __URL__ = 'http://127.0.0.1:8080';
+__URL__ = 'https://twittornat.herokuapp.com';
 
 
 
