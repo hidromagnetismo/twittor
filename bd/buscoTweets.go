@@ -29,6 +29,7 @@ func BuscoTweets(userID string, limit int64, page int64) ([]models.LeoTweets, er
 	}
 
 	opciones := options.Find()
+	opciones.SetSort(bson.D{{Key: "fecha", Value: -1}})
 	opciones.SetLimit(limit)
 	opciones.SetSkip((page - 1) * limit)
 

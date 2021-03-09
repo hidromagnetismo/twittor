@@ -643,7 +643,8 @@ describe('Endpoint GET /tweet, leer los tweets de un usuario', () => {
             await (await db()).collection('tweet').insertOne({
                 // _userId: DB_usuario._id,
                 _userId: ObjectId(userId),
-                mensaje: faker.lorem.paragraph()
+                mensaje: faker.lorem.paragraph(),
+                fecha: new Date()
             });
         }
 
@@ -694,7 +695,8 @@ describe('Endpoint GET /tweet, leer los tweets de un usuario', () => {
             await (await db()).collection('tweet').insertOne({
                 // _userId: DB_usuario._id,
                 _userId: ObjectId(userId),
-                mensaje: faker.lorem.paragraph()
+                mensaje: faker.lorem.paragraph(),
+                fecha: new Date()
             });
         }
 
