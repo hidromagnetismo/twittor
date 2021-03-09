@@ -8,46 +8,34 @@ import (
 	"github.com/hidromagnetismo/twittor/bd"
 )
 
-// LeoTweets permite leer los tweets de un usuario por su userID
+// LeoTweets leo los Tweets
 func LeoTweets(w http.ResponseWriter, r *http.Request) {
 
-	defer r.Body.Close()
-
-	req := r.URL.Query()
-
-	userID := req.Get("userId")
-	if len(userID) < 1 {
-		http.Error(w, "Debe enviar el parámetro userId", http.StatusBadRequest)
+	ID := r.URL.Query().Get("id")
+	if len(ID) < 1 {
+		http.Error(w, "Debe enviar el parámetro id", http.StatusBadRequest)
 		return
 	}
 
-	limit, err := strconv.ParseInt(req.Get("limit"), 10, 64)
+	if len(r.URL.Query().Get("pagina")) < 1 {
+		http.Error(w, "Debe enviar el parámetro página", http.StatusBadRequest)
+		return
+	}
+
+	pagina, err := strconv.Atoi(r.URL.Query().Get("pagina"))
 	if err != nil {
-		http.Error(w, "limit debe ser un numero "+err.Error(), 400)
-		return
-	}
-	if limit > 18 || limit < 1 {
-		http.Error(w, "limit debe estar comprendido entre 1 y 18", http.StatusBadRequest)
+		http.Error(w, "Debe enviar el parámetro página con un valor mayor a 0", http.StatusBadRequest)
 		return
 	}
 
-	page, err := strconv.ParseInt(req.Get("page"), 10, 64)
-	if err != nil {
-		http.Error(w, "page debe ser un numero "+err.Error(), 400)
-		return
-	}
-	if page < 1 {
-		http.Error(w, "page debe ser mayor o igual a 1", http.StatusBadRequest)
-		return
-	}
-
-	tweets, err := bd.BuscoTweets(userID, limit, page)
-	if err != nil {
-		http.Error(w, "Ocurrió un error al intentar buscar los tweets "+err.Error(), 400)
+	pag := int64(pagina)
+	respuesta, correcto := bd.LeoTweets(ID, pag)
+	if correcto == false {
+		http.Error(w, "Error al leer los tweets ", http.StatusBadRequest)
 		return
 	}
 
 	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(http.StatusAccepted)
-	json.NewEncoder(w).Encode(tweets)
+	w.WriteHeader(http.StatusCreated)
+	json.NewEncoder(w).Encode(respuesta)
 }

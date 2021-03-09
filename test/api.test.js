@@ -580,8 +580,8 @@ describe('Endpoint POST /tweet, insertar un Tweet', () => {
         expect(DB_tweet.mensaje).toBe(mensaje);
         
         // Checando el usuario dueño del tweet:
-        expect(DB_tweet._userId).toBeDefined();
-        expect(DB_tweet._userId.toString()).toBe(DB_usuario._id.toString());
+        expect(DB_tweet.userId).toBeDefined();
+        expect(DB_tweet.userId.toString()).toBe(DB_usuario._id.toString());
 
     });
 
@@ -641,18 +641,20 @@ describe('Endpoint GET /tweet, leer los tweets de un usuario', () => {
         // Rel
         for (let i=0; i<numero_tweets; i++) {
             await (await db()).collection('tweet').insertOne({
-                // _userId: DB_usuario._id,
-                _userId: ObjectId(userId),
-                mensaje: faker.lorem.paragraph()
+                // userId: DB_usuario._id,
+                userId: userId,
+                mensaje: faker.lorem.paragraph(),
+                fecha: new Date()
             });
         }
 
         // Enviando peticion 
         Headers = {
             'Content-Type': 'application/json',
+            'Authorization': `Bearer${ResponseJSON.token}`
         }
 
-        ResponseText = await GET(`${__URL__}/tweet?userId=${userId}&limit=${numero_tweets}&page=1`, Headers);
+        ResponseText = await GET(`${__URL__}/leoTweets?id=${userId}&pagina=1`, Headers);
         ResponseJSON = JSON.parse(ResponseText);
 
         expect(ResponseJSON.length).toBe(numero_tweets);
@@ -665,15 +667,15 @@ describe('Endpoint GET /tweet, leer los tweets de un usuario', () => {
         
         // Chequenado las posibles respuestas
         
-        ResponseText = await GET(`${__URL__}/tweet?userId=${userId}&limit=${numero_tweets}&page=2`, Headers);
+        ResponseText = await GET(`${__URL__}/leoTweets?id=${userId}&pagina=2`, Headers);
         ResponseJSON = JSON.parse(ResponseText);
         expect(ResponseJSON).toBeNull();
         
-        ResponseText = await GET(`${__URL__}/tweet?userId=${userId}&limit=${numero_tweets}&page=0`, Headers);
-        expect(ResponseText).toContain("page debe ser mayor o igual a 1");        
-        
-        ResponseText = await GET(`${__URL__}/tweet?userId=${userId}&limit=${numero_tweets+1}&page=1`, Headers);
-        expect(ResponseText).toContain("limit debe estar comprendido entre 1 y 18");
+        ResponseText = await GET(`${__URL__}/leoTweets?pagina=0`, Headers);
+        expect(ResponseText).toContain("Debe enviar el parámetro id");
+
+        ResponseText = await GET(`${__URL__}/leoTweets?id=${userId}`, Headers);
+        expect(ResponseText).toContain("Debe enviar el parámetro página");
 
     });
  
@@ -687,42 +689,43 @@ describe('Endpoint GET /tweet, leer los tweets de un usuario', () => {
 
         const userId = DB_usuario._id.toString();
         
-        const numero_tweets = 18;
+        const numero_tweets = 100;
 
         // Rel
         for (let i=0; i<numero_tweets; i++) {
             await (await db()).collection('tweet').insertOne({
-                // _userId: DB_usuario._id,
-                _userId: ObjectId(userId),
-                mensaje: faker.lorem.paragraph()
+                // userId: DB_usuario._id,
+                userId: userId,
+                mensaje: faker.lorem.paragraph(),
+                fecha: new Date()
             });
         }
 
         // Enviando peticiones 
         Headers = {
             'Content-Type': 'application/json',
+            'Authorization': `Bearer${ResponseJSON.token}`
         }
 
-        for (let j=1; j<=numero_tweets; j++) {
-            let limit = j;
-            let leftExpresion = ""
-            for (let i=1; i<=Math.ceil(numero_tweets/limit); i++) {
-                if (i*limit>numero_tweets) {
-                    let count = numero_tweets-(i-1)*limit;
-                    leftExpresion += ` + ${count}`;
-                    ResponseText = await GET(`${__URL__}/tweet?userId=${userId}&limit=${limit}&page=${i}`, Headers);
-                    ResponseJSON = JSON.parse(ResponseText);
-                    expect(ResponseJSON.length).toBe(count);
-                } else {
-                    leftExpresion += ` + ${limit}`;
-                    ResponseText = await GET(`${__URL__}/tweet?userId=${userId}&limit=${limit}&page=${i}`, Headers);
-                    ResponseJSON = JSON.parse(ResponseText);
-                    expect(ResponseJSON.length).toBe(limit);
-                }
+        let leftExpresion = "";
 
+        for (let i=1; i<=Math.ceil(numero_tweets/20); i++) {
+            if (i*20>numero_tweets) {
+                let count = numero_tweets-(i-1)*20;
+                leftExpresion += ` + ${count}`;
+                ResponseText = await GET(`${__URL__}/leoTweets?id=${userId}&pagina=${i}`, Headers);
+                ResponseJSON = JSON.parse(ResponseText);
+                expect(ResponseJSON.length).toBe(count);
+            } else {
+                leftExpresion += ` + ${20}`;
+                ResponseText = await GET(`${__URL__}/leoTweets?id=${userId}&pagina=${i}`, Headers);
+                ResponseJSON = JSON.parse(ResponseText);
+                expect(ResponseJSON.length).toBe(20);
             }
-            console.log(`${leftExpresion} = ${numero_tweets}`);
+
         }
+
+        console.log(`${leftExpresion} = ${numero_tweets}`);
         
     });
 
