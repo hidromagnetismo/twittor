@@ -4,14 +4,16 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "dev": "go run main.go",
-    "test": "jest --watch",
-    "prod": "go build main.go; ./main"
+    "dev": "npm run kill; go run main.go",
+    "test": "npm run kill; jest --watch",
+    "prod": "npm run kill; go build main.go; ./main",
+    "kill": "ps aux | grep \"node_modules/puppeteer\" | grep -v grep | awk '{print $2}' | { while read PID; do kill -9 $PID; done }"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "devDependencies": {
+    "faker": "^5.4.0",
     "jest": "^26.6.3",
     "jsonwebtoken": "^8.5.1",
     "jwt-decode": "^3.1.2",

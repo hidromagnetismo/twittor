@@ -7,6 +7,7 @@ import (
 
 	"github.com/hidromagnetismo/twittor/bd"
 	"github.com/hidromagnetismo/twittor/models"
+	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
 // GraboTweet permite grabar el tweet en la base de datos
@@ -15,8 +16,10 @@ func GraboTweet(w http.ResponseWriter, r *http.Request) {
 	var mensaje models.Tweet
 	err := json.NewDecoder(r.Body).Decode(&mensaje)
 
+	userObjID, _ := primitive.ObjectIDFromHex(IDUsuario)
+
 	registro := models.GraboTweet{
-		UserID:  IDUsuario,
+		UserID:  userObjID,
 		Mensaje: mensaje.Mensaje,
 		Fecha:   time.Now(),
 	}
@@ -32,5 +35,6 @@ func GraboTweet(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusCreated)
 }
