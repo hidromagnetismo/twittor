@@ -1,7 +1,7 @@
 
 // import test from 'jest';
 // import puppeteer from 'puppeteer';
-const { GET, POST, PUT } = require('./src/restClientPuppeteer');
+const { GET, POST, PUT, DELETE } = require('./src/restClientPuppeteer');
 let __URL__, __DB__, Headers, Body, ResponseText, ResponseJSON;
 
 const { exec } = require('child_process');
@@ -217,9 +217,6 @@ async function registerAndLogin() {
     expect(DB_usuario.email).toBe(email);
 
     // Realizamos el login con el usuario previamente registrado/guardado
-    Headers = {
-        'Content-Type': 'application/json'
-    }
     Body = {
         email,
         password
@@ -314,10 +311,6 @@ describe('Endpoint POST /login, login', () => {
         expect(DB_usuario.email).toBe(email);
 
         // Realizamos el login con el usuario previamente registrado/guardado
-        Headers = {
-            'Content-Type': 'application/json'
-        }
-
         const __INCORRECT__ = 'contraseña_incorrecta';
         
         Body = {
@@ -485,11 +478,6 @@ describe('Endpoint GET /modificarPerfil, modificando el perfil del usuario', () 
 
 
         // Tayendose el perfil luego de haber actualizado
-        Headers = {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer${ResponseJSON.token}`
-        }
-
         ResponseText = await GET(`${__URL__}/verPerfil?id=${DB_usuario._id}`, Headers);
         ResponseJSON = JSON.parse(ResponseText);
 
@@ -659,7 +647,7 @@ describe('Endpoint GET /tweet, leer los tweets de un usuario', () => {
         expect(ResponseJSON.length).toBe(numero_tweets);
         
         for (let i=0; i<numero_tweets; i++) {
-            expect(ResponseJSON[i].userId).toBe(userId);
+            expect(ResponseJSON[i]._userId).toBe(userId);
             expect(ResponseJSON[i].mensaje).toBeDefined();
             expect(ResponseJSON[i].fecha).toBeDefined();
         }
@@ -741,3 +729,80 @@ describe('Endpoint GET /tweet, leer los tweets de un usuario', () => {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+// 88888888ba,    88888888888  88           88888888888  888888888888  88888888888  
+// 88      `"8b   88           88           88                88       88           
+// 88        `8b  88           88           88                88       88           
+// 88         88  88aaaaa      88           88aaaaa           88       88aaaaa      
+// 88         88  88"""""      88           88"""""           88       88"""""      
+// 88         8P  88           88           88                88       88           
+// 88      .a8P   88           88           88                88       88           
+// 88888888Y"'    88888888888  88888888888  88888888888       88       88888888888  
+                                                                                 
+                                                                                 
+                                                                                 
+//           d8                                                                     
+//         ,8P'  ,d                                                   ,d            
+//        d8"    88                                                   88            
+//      ,8P'   MM88MMM  8b      db      d8   ,adPPYba,   ,adPPYba,  MM88MMM         
+//     d8"       88     `8b    d88b    d8'  a8P_____88  a8P_____88    88            
+//   ,8P'        88      `8b  d8'`8b  d8'   8PP"""""""  8PP"""""""    88            
+//  d8"          88,      `8bd8'  `8bd8'    "8b,   ,aa  "8b,   ,aa    88,           
+// 8P'           "Y888      YP      YP       `"Ybbd8"'   `"Ybbd8"'    "Y888         
+
+//      .only
+//      .skip
+describe('Endpoint DELETE /tweet, eliminar un tweet', () => {
+    //.only
+    //.skip
+    it('Default', async () => {
+
+        // Primero creamos el Tweet a que luego se va a eliminar
+
+        // Creamos el usuario y nos logueamos
+        let {email, DB_usuario, ResponseJSON} = await registerAndLogin();
+
+        // Creando el tweet
+        Headers = {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer${ResponseJSON.token}`
+        }
+        const date = parseInt(Date.now());
+        const mensaje = `Es es mi primer tweet ${date}`;
+        Body = {
+            mensaje
+        }
+        ResponseText = await POST(`${__URL__}/tweet`, Headers, Body);
+
+        let DB_tweet = await (await db()).collection('tweet').findOne({mensaje: mensaje});
+        
+        // Verificando que se haya registrado en la base de datos
+        expect(DB_tweet.mensaje).toBe(mensaje);
+        
+        // Checando el usuario dueño del tweet:
+        expect(DB_tweet._userId).toBeDefined();
+        expect(DB_tweet._userId.toString()).toBe(DB_usuario._id.toString());
+
+
+        // Ahora procedemos a borrar el tweet previamente creado
+
+        ResponseText = await DELETE(`${__URL__}/tweet?id=${DB_tweet._id.toString()}`, Headers);
+        console.log(ResponseText);
+
+        // Confirmamos que se haya borrado
+        DB_tweet = await (await db()).collection('tweet').findOne({mensaje: mensaje});
+        
+        expect(DB_tweet).toBeNull()
+    });
+
+});

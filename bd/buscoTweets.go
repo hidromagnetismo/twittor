@@ -48,6 +48,7 @@ func BuscoTweets(userID string, limit int64, page int64) ([]models.LeoTweets, er
 	var tweetLT models.LeoTweets
 
 	for _, tweetGT := range tweetsGT {
+		tweetLT.ID = tweetGT.ID.Hex()
 		tweetLT.UserID = tweetGT.UserID.Hex()
 		tweetLT.Mensaje = tweetGT.Mensaje
 		tweetLT.Fecha = tweetGT.Fecha
