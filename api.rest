@@ -90,7 +90,7 @@ POST {{__URL__}}/registro
 Content-Type: application/json
 
 {
-	"id": "{{userID}}",
+	"_id": "{{userID}}",
 	"email": "pablot@registro.com",
 	"password": "123456",
 	"nombre": "Pablo",

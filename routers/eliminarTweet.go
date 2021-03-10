@@ -17,18 +17,12 @@ func EliminarTweet(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	var status bool
-	status, err := bd.EliminoTweet(ID, IDUsuario)
+	err := bd.EliminoTweet(ID, IDUsuario)
 	if err != nil {
 		http.Error(w, "Ocurrió un error al intentar eliminar el Tweet. Reintente nuevamente "+err.Error(), 400)
 		return
 	}
 
-	if status == false {
-		http.Error(w, "No se ha logrado eliminar el Tweet del usuario ", 400)
-		return
-	}
-
+	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK)
-
 }

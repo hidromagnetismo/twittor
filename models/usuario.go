@@ -8,7 +8,7 @@ import (
 
 // Usuario es el modelo de usuario de la base de MongoDB
 type Usuario struct {
-	ID              primitive.ObjectID `bson:"_id,omitempty"             json:"id,omitempty"`
+	ID              primitive.ObjectID `bson:"_id,omitempty"             json:"_id,omitempty"`
 	Nombre          string             `bson:"nombre,omitempty"          json:"nombre,omitempty"`
 	Apellidos       string             `bson:"apellidos,omitempty"       json:"apellidos,omitempty"`
 	FechaNacimiento time.Time          `bson:"fechaNacimiento,omitempty" json:"fechaNacimiento,omitempty"`

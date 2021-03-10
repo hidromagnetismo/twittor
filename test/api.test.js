@@ -399,8 +399,8 @@ describe('Endpoint GET /verPerfil, perfil del usuario luego de haberse logueado'
         ResponseJSON = JSON.parse(ResponseText);
         
         // Confirmando respuesta
-        expect(ResponseJSON.id).toBeDefined();
-        expect(ResponseJSON.id).toBe(DB_usuario._id.toString());
+        expect(ResponseJSON._id).toBeDefined();
+        expect(ResponseJSON._id).toBe(DB_usuario._id.toString());
         expect(ResponseJSON.email).toBeDefined();
         expect(ResponseJSON.email).toBe(email);
         expect(ResponseJSON.email).toBe(DB_usuario.email);
@@ -482,8 +482,8 @@ describe('Endpoint GET /modificarPerfil, modificando el perfil del usuario', () 
         ResponseJSON = JSON.parse(ResponseText);
 
         // Confirmando respuesta
-        expect(ResponseJSON.id).toBeDefined();
-        expect(ResponseJSON.id).toBe(DB_usuario_update._id.toString());
+        expect(ResponseJSON._id).toBeDefined();
+        expect(ResponseJSON._id).toBe(DB_usuario_update._id.toString());
 
         expect(ResponseJSON.email).toBeDefined();
         expect(ResponseJSON.email).toBe(email);
@@ -795,9 +795,7 @@ describe('Endpoint DELETE /tweet, eliminar un tweet', () => {
 
 
         // Ahora procedemos a borrar el tweet previamente creado
-
         ResponseText = await DELETE(`${__URL__}/tweet?id=${DB_tweet._id.toString()}`, Headers);
-        console.log(ResponseText);
 
         // Confirmamos que se haya borrado
         DB_tweet = await (await db()).collection('tweet').findOne({mensaje: mensaje});

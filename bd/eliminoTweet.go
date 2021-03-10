@@ -9,7 +9,7 @@ import (
 )
 
 // EliminoTweet permite modificar el perfil del usuario
-func EliminoTweet(ID string, userID string) (bool, error) {
+func EliminoTweet(ID string, userID string) error {
 	ctx, cancel := context.WithTimeout(context.Background(), 15*time.Second)
 	defer cancel()
 
@@ -20,15 +20,11 @@ func EliminoTweet(ID string, userID string) (bool, error) {
 	userObjID, _ := primitive.ObjectIDFromHex(userID)
 
 	filtro := bson.M{
-		"_id":     bson.M{"$eq": objID},
-		"_userId": bson.M{"$eq": userObjID},
+		"_id":     objID,
+		"_userId": userObjID,
 	}
 
 	_, err := col.DeleteOne(ctx, filtro)
-	if err != nil {
-		return false, err
-	}
-
-	return true, nil
+	return err
 
 }
