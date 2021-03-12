@@ -1,20 +1,12 @@
 
 // import test from 'jest';
 // import puppeteer from 'puppeteer';
-const { GET, POST, PUT, DELETE } = require('./src/restClientPuppeteer');
-let __URL__, __DB__, Headers, Body, ResponseText, ResponseJSON;
+const { GET, POST, PUT, DELETE, POST_FILE, GET_FILE } = require('./src/restClientPuppeteer');
+let __URL__, __DB__, Headers, Body, Response, ResponseText, ResponseJSON, Data;
 
-const { exec } = require('child_process');
-exec("ps aux | grep \"node_modules/puppeteer\" | grep -v grep | awk '{print $2}' | { while read PID; do kill -9 $PID; done }", (err, stdout, stderr) => {
-    if (err) {
-        //some err occurred
-        console.error(err)
-    } else {
-        // the *entire* stdout and stderr (buffered)
-        // console.log(`stdout: ${stdout}`);
-        // console.log(`stderr: ${stderr}`);
-    }
-});
+const { promisify } = require('util');
+const exec = promisify(require('child_process').exec);
+exec("ps aux | grep \"node_modules/puppeteer\" | grep -v grep | awk '{print $2}' | { while read PID; do kill -9 $PID; done }");
 
 async function db () {
     try {
@@ -57,7 +49,8 @@ const { ObjectId } = require('mongodb');
 
 
 const jwt = require('jsonwebtoken');
-const { getConsoleOutput } = require('@jest/console');
+var path = require("path");
+var __DIR_APP__ = path.resolve(".");
 // const config = require('../src/config');
 const secret = 'MastersDelDesarrollo_grupoDeFacebook'; // jwt/jwt.go
 
@@ -754,6 +747,7 @@ describe('Endpoint GET /leoTweets, leer los tweets de un usuario', () => {
 //      .only
 //      .skip
 describe('Endpoint DELETE /eliminarTweet, eliminar un tweet', () => {
+    
     //.only
     //.skip
     it('Default', async () => {
@@ -795,6 +789,308 @@ describe('Endpoint DELETE /eliminarTweet, eliminar un tweet', () => {
     });
 
 });
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// 88888888ba     ,ad8888ba,     ad88888ba  888888888888                                                                                 
+// 88      "8b   d8"'    `"8b   d8"     "8b      88                                                                                      
+// 88      ,8P  d8'        `8b  Y8,              88                                                                                      
+// 88aaaaaa8P'  88          88  `Y8aaaaa,        88                                                                                      
+// 88""""""'    88          88    `"""""8b,      88                                                                                      
+// 88           Y8,        ,8P          `8b      88                                                                                      
+// 88            Y8a.    .a8P   Y8a     a8P      88                                                                                      
+// 88             `"Y8888Y"'     "Y88888P"       88                                                                                      
+                                                                                                                                      
+                                                                                                                                      
+                                                                                                                                      
+//           d8                       88           88                  db                                                                
+//         ,8P'                       88           ""                 d88b                                ,d                             
+//        d8"                         88                             d8'`8b                               88                             
+//      ,8P'  ,adPPYba,  88       88  88,dPPYba,   88  8b,dPPYba,   d8'  `8b   8b       d8  ,adPPYYba,  MM88MMM  ,adPPYYba,  8b,dPPYba,  
+//     d8"    I8[    ""  88       88  88P'    "8a  88  88P'   "Y8  d8YaaaaY8b  `8b     d8'  ""     `Y8    88     ""     `Y8  88P'   "Y8  
+//   ,8P'      `"Y8ba,   88       88  88       d8  88  88         d8""""""""8b  `8b   d8'   ,adPPPPP88    88     ,adPPPPP88  88          
+//  d8"       aa    ]8I  "8a,   ,a88  88b,   ,a8"  88  88        d8'        `8b  `8b,d8'    88,    ,88    88,    88,    ,88  88          
+// 8P'        `"YbbdP"'   `"YbbdP'Y8  8Y"Ybbd8"'   88  88       d8'          `8b   "8"      `"8bbdP"Y8    "Y888  `"8bbdP"Y8  88          
+
+//      .only
+//      .skip
+describe('Endpoint POST /subirAvatar, subir la imagen del Avatar al servidor', () => {
+    
+    //.only
+    //.skip
+    it('Default', async () => {
+
+        // Creamos el usuario y nos logueamos
+        let {email, DB_usuario, ResponseJSON} = await registerAndLogin();
+
+        // Llenamos la data especificando el archivo a subir y su clave=key para obtenerlo del Request
+        Data = {
+            authorization: `Bearer${ResponseJSON.token}`,
+            key: 'avatar',
+            filePath: `${__dirname}/resources/avatars/Pablo-Tilotta.jpeg`
+            // filePath: `${__dirname}/resources/avatars/Diosymar.png`
+            // filePath: `${__dirname}/resources/avatars/Liscano.Natanael.PNG`
+        };
+
+        // Realizando petición, subida de la imagen
+        ResponseText = await POST_FILE(`${__URL__}/subirAvatar`, Data);
+        
+        // Chequeando que el archivo se haya subido y que se haya registrado en la base de datos
+        DB_usuario = await (await db()).collection('usuarios').findOne({_id: DB_usuario._id});
+        const file_match = await (await exec(`ls "${__DIR_APP__}/uploads/avatars/" | grep "${DB_usuario.avatar}" | grep -v grep`)).stdout;
+        expect(file_match).toContain(DB_usuario.avatar);
+
+        // Chequeando que el MD5 del archivo original coincida con el subido al servidor
+        MD5_original = await (await exec(`md5sum "${Data.filePath}" | awk '{ print \$1 }'`)).stdout;
+        MD5_uploaded = await (await exec(`md5sum "${__DIR_APP__}/uploads/avatars/${DB_usuario.avatar}" | awk '{ print \$1 }'`)).stdout;
+        expect(MD5_uploaded).toBe(MD5_original);
+
+    });
+
+});
+
+
+
+
+
+
+
+
+
+
+
+
+
+//   ,ad8888ba,   88888888888  888888888888                                                                                                                          
+//  d8"'    `"8b  88                88                                                                                                                               
+// d8'            88                88                                                                                                                               
+// 88             88aaaaa           88                                                                                                                               
+// 88      88888  88"""""           88                                                                                                                               
+// Y8,        88  88                88                                                                                                                               
+//  Y8a.    .a88  88                88                                                                                                                               
+//   `"Y88888P"   88888888888       88                                                                                                                               
+                                                                                                                                                                  
+                                                                                                                                                                  
+                                                                                                                                                                  
+//           d8           88                                                                       db                                                                
+//         ,8P'           88            ,d                                                        d88b                                ,d                             
+//        d8"             88            88                                                       d8'`8b                               88                             
+//      ,8P'  ,adPPYba,   88,dPPYba,  MM88MMM  ,adPPYba,  8b,dPPYba,    ,adPPYba,  8b,dPPYba,   d8'  `8b   8b       d8  ,adPPYYba,  MM88MMM  ,adPPYYba,  8b,dPPYba,  
+//     d8"   a8"     "8a  88P'    "8a   88    a8P_____88  88P'   `"8a  a8P_____88  88P'   "Y8  d8YaaaaY8b  `8b     d8'  ""     `Y8    88     ""     `Y8  88P'   "Y8  
+//   ,8P'    8b       d8  88       d8   88    8PP"""""""  88       88  8PP"""""""  88         d8""""""""8b  `8b   d8'   ,adPPPPP88    88     ,adPPPPP88  88          
+//  d8"      "8a,   ,a8"  88b,   ,a8"   88,   "8b,   ,aa  88       88  "8b,   ,aa  88        d8'        `8b  `8b,d8'    88,    ,88    88,    88,    ,88  88          
+// 8P'        `"YbbdP"'   8Y"Ybbd8"'    "Y888  `"Ybbd8"'  88       88   `"Ybbd8"'  88       d8'          `8b   "8"      `"8bbdP"Y8    "Y888  `"8bbdP"Y8  88          
+
+//      .only
+//      .skip
+describe('Endpoint GET /obtenerAvatar, obtiene el archivo/recurso imagen del Avatar por medio del ID de un usuario', () => {
+    
+    //.only
+    //.skip
+    it('Default', async () => {
+
+        // Creamos el usuario y nos logueamos
+        let {email, DB_usuario, ResponseJSON} = await registerAndLogin();
+
+        // Llenamos la data especificando el archivo a subir y su clave=key para obtenerlo del Request
+        Data = {
+            authorization: `Bearer${ResponseJSON.token}`,
+            key: 'avatar',
+            filePath: `${__dirname}/resources/avatars/Pablo-Tilotta.jpeg`
+            // filePath: `${__dirname}/resources/avatars/Diosymar.png`
+            // filePath: `${__dirname}/resources/avatars/Liscano.Natanael.PNG`
+        };
+
+        // Realizamos la petición, subida de la imagen
+        ResponseText = await POST_FILE(`${__URL__}/subirAvatar`, Data);
+
+        // Obteniendo el archivo previamente subido
+        let { Response, File } = await GET_FILE(`${__URL__}/obtenerAvatar?id=${DB_usuario._id.toString()}`, null);
+
+        // Chequeando MD5
+        MD5_original = await (await exec(`md5sum "${Data.filePath}" | awk '{ print \$1 }'`)).stdout;
+        MD5_downloaded = await (await exec(`md5sum "${File}" | awk '{ print \$1 }'`)).stdout;
+        expect(MD5_downloaded).toBe(MD5_original);
+
+        // Chequeando funcionamiento del MD5 en su no coincidencia!
+        Data = {
+            // filePath: `${__dirname}/resources/avatars/Pablo-Tilotta.jpeg`
+            filePath: `${__dirname}/resources/avatars/Diosymar.png`
+            // filePath: `${__dirname}/resources/avatars/Liscano.Natanael.PNG`
+        };
+        MD5_original = await (await exec(`md5sum "${Data.filePath}" | awk '{ print \$1 }'`)).stdout;
+        MD5_downloaded = await (await exec(`md5sum "${File}" | awk '{ print \$1 }'`)).stdout;
+        expect(MD5_downloaded).not.toBe(MD5_original);
+
+    });
+
+});
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// 88888888ba     ,ad8888ba,     ad88888ba  888888888888                                                                                      
+// 88      "8b   d8"'    `"8b   d8"     "8b      88                                                                                           
+// 88      ,8P  d8'        `8b  Y8,              88                                                                                           
+// 88aaaaaa8P'  88          88  `Y8aaaaa,        88                                                                                           
+// 88""""""'    88          88    `"""""8b,      88                                                                                           
+// 88           Y8,        ,8P          `8b      88                                                                                           
+// 88            Y8a.    .a8P   Y8a     a8P      88                                                                                           
+// 88             `"Y8888Y"'     "Y88888P"       88                                                                                           
+                                                                                                                                           
+                                                                                                                                           
+                                                                                                                                           
+//           d8                       88           88              88888888ba                                                                 
+//         ,8P'                       88           ""              88      "8b                                                                
+//        d8"                         88                           88      ,8P                                                                
+//      ,8P'  ,adPPYba,  88       88  88,dPPYba,   88  8b,dPPYba,  88aaaaaa8P'  ,adPPYYba,  8b,dPPYba,   8b,dPPYba,    ,adPPYba,  8b,dPPYba,  
+//     d8"    I8[    ""  88       88  88P'    "8a  88  88P'   "Y8  88""""""8b,  ""     `Y8  88P'   `"8a  88P'   `"8a  a8P_____88  88P'   "Y8  
+//   ,8P'      `"Y8ba,   88       88  88       d8  88  88          88      `8b  ,adPPPPP88  88       88  88       88  8PP"""""""  88          
+//  d8"       aa    ]8I  "8a,   ,a88  88b,   ,a8"  88  88          88      a8P  88,    ,88  88       88  88       88  "8b,   ,aa  88          
+// 8P'        `"YbbdP"'   `"YbbdP'Y8  8Y"Ybbd8"'   88  88          88888888P"   `"8bbdP"Y8  88       88  88       88   `"Ybbd8"'  88          
+
+//      .only
+//      .skip
+describe('Endpoint POST /subirBanner, subir la imagen del Banner al servidor', () => {
+    
+    //.only
+    //.skip
+    it('Default', async () => {
+
+        // Creamos el usuario y nos logueamos
+        let {email, DB_usuario, ResponseJSON} = await registerAndLogin();
+
+        // Llenamos la data especificando el archivo a subir y su clave=key para obtenerlo del Request
+        Data = {
+            authorization: `Bearer${ResponseJSON.token}`,
+            key: 'banner',
+            filePath: `${__dirname}/resources/banners/banner-pablo-tilotta.jpg`
+            // filePath: `${__dirname}/resources/banners/web-designer.jpg`
+            // filePath: `${__dirname}/resources/banners/programing.python.jpeg`
+        };
+
+        // Realizando petición, subida de la imagen
+        ResponseText = await POST_FILE(`${__URL__}/subirBanner`, Data);
+        
+        // Chequeando que el archivo se haya subido y que se haya registrado en la base de datos
+        DB_usuario = await (await db()).collection('usuarios').findOne({_id: DB_usuario._id});
+        const file_match = await (await exec(`ls "${__DIR_APP__}/uploads/banners/" | grep "${DB_usuario.banner}" | grep -v grep`)).stdout;
+        expect(file_match).toContain(DB_usuario.banner);
+
+        // Chequeando que el MD5 del archivo original coincida con el subido al servidor
+        MD5_original = await (await exec(`md5sum "${Data.filePath}" | awk '{ print \$1 }'`)).stdout;
+        MD5_uploaded = await (await exec(`md5sum "${__DIR_APP__}/uploads/banners/${DB_usuario.banner}" | awk '{ print \$1 }'`)).stdout;
+        expect(MD5_uploaded).toBe(MD5_original);
+
+    });
+
+});
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+//   ,ad8888ba,   88888888888  888888888888                                                                                                                               
+//  d8"'    `"8b  88                88                                                                                                                                    
+// d8'            88                88                                                                                                                                    
+// 88             88aaaaa           88                                                                                                                                    
+// 88      88888  88"""""           88                                                                                                                                    
+// Y8,        88  88                88                                                                                                                                    
+//  Y8a.    .a88  88                88                                                                                                                                    
+//   `"Y88888P"   88888888888       88                                                                                                                                    
+                                                                                                                                                                       
+                                                                                                                                                                       
+                                                                                                                                                                       
+//           d8           88                                                                   88888888ba                                                                 
+//         ,8P'           88            ,d                                                     88      "8b                                                                
+//        d8"             88            88                                                     88      ,8P                                                                
+//      ,8P'  ,adPPYba,   88,dPPYba,  MM88MMM  ,adPPYba,  8b,dPPYba,    ,adPPYba,  8b,dPPYba,  88aaaaaa8P'  ,adPPYYba,  8b,dPPYba,   8b,dPPYba,    ,adPPYba,  8b,dPPYba,  
+//     d8"   a8"     "8a  88P'    "8a   88    a8P_____88  88P'   `"8a  a8P_____88  88P'   "Y8  88""""""8b,  ""     `Y8  88P'   `"8a  88P'   `"8a  a8P_____88  88P'   "Y8  
+//   ,8P'    8b       d8  88       d8   88    8PP"""""""  88       88  8PP"""""""  88          88      `8b  ,adPPPPP88  88       88  88       88  8PP"""""""  88          
+//  d8"      "8a,   ,a8"  88b,   ,a8"   88,   "8b,   ,aa  88       88  "8b,   ,aa  88          88      a8P  88,    ,88  88       88  88       88  "8b,   ,aa  88          
+// 8P'        `"YbbdP"'   8Y"Ybbd8"'    "Y888  `"Ybbd8"'  88       88   `"Ybbd8"'  88          88888888P"   `"8bbdP"Y8  88       88  88       88   `"Ybbd8"'  88          
+
+//      .only
+//      .skip
+describe('Endpoint GET /obtenerBanner, obtiene el archivo/recurso imagen del Banner por medio del ID de un usuario', () => {
+    
+    //.only
+    //.skip
+    it('Default', async () => {
+
+        // Creamos el usuario y nos logueamos
+        let {email, DB_usuario, ResponseJSON} = await registerAndLogin();
+
+        // Llenamos la data especificando el archivo a subir y su clave=key para obtenerlo del Request
+        Data = {
+            authorization: `Bearer${ResponseJSON.token}`,
+            key: 'banner',
+            filePath: `${__dirname}/resources/banners/banner-pablo-tilotta.jpg`
+            // filePath: `${__dirname}/resources/banners/web-designer.jpg`
+            // filePath: `${__dirname}/resources/banners/programing.python.jpeg`
+        };
+
+        // Realizamos la petición, subida de la imagen
+        ResponseText = await POST_FILE(`${__URL__}/subirBanner`, Data);
+
+        // Obteniendo el archivo previamente subido
+        let { Response, File } = await GET_FILE(`${__URL__}/obtenerBanner?id=${DB_usuario._id.toString()}`, null);
+
+        // Chequeando MD5
+        MD5_original = await (await exec(`md5sum "${Data.filePath}" | awk '{ print \$1 }'`)).stdout;
+        MD5_downloaded = await (await exec(`md5sum "${File}" | awk '{ print \$1 }'`)).stdout;
+        expect(MD5_downloaded).toBe(MD5_original);
+
+        // Chequeando funcionamiento del MD5 en su no coincidencia!
+        Data = {
+            // filePath: `${__dirname}/resources/banners/banner-pablo-tilotta.jpg`
+            filePath: `${__dirname}/resources/banners/web-designer.jpg`
+            // filePath: `${__dirname}/resources/banners/programing.python.jpeg`
+        };
+        MD5_original = await (await exec(`md5sum "${Data.filePath}" | awk '{ print \$1 }'`)).stdout;
+        MD5_downloaded = await (await exec(`md5sum "${File}" | awk '{ print \$1 }'`)).stdout;
+        expect(MD5_downloaded).not.toBe(MD5_original);
+
+    });
+
+});
+
 
 
 
