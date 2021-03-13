@@ -11,7 +11,7 @@ import (
 )
 
 // BuscoPerfil busca un perfil en la BD
-func BuscoPerfil(ID string) (models.Usuario, error) {
+func BuscoPerfil(userID string) (models.Usuario, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), 15*time.Second)
 	defer cancel()
 
@@ -20,7 +20,7 @@ func BuscoPerfil(ID string) (models.Usuario, error) {
 
 	var perfil models.Usuario
 
-	objID, _ := primitive.ObjectIDFromHex(ID)
+	objID, _ := primitive.ObjectIDFromHex(userID)
 
 	condicion := bson.M{
 		"_id": objID,
