@@ -17,3 +17,14 @@
 main
 
 node_modules
+
+
+
+
+
+
+
+
+
+# Va al final para que funcione
+!.gitignore
