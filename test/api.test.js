@@ -1101,3 +1101,75 @@ describe('Endpoint GET /obtenerBanner, obtiene el archivo/recurso imagen del Ban
 
 
 
+
+
+
+
+
+
+// 88888888ba     ,ad8888ba,     ad88888ba  888888888888                                                                             
+// 88      "8b   d8"'    `"8b   d8"     "8b      88                                                                                  
+// 88      ,8P  d8'        `8b  Y8,              88                                                                                  
+// 88aaaaaa8P'  88          88  `Y8aaaaa,        88                                                                                  
+// 88""""""'    88          88    `"""""8b,      88                                                                                  
+// 88           Y8,        ,8P          `8b      88                                                                                  
+// 88            Y8a.    .a8P   Y8a     a8P      88                                                                                  
+// 88             `"Y8888Y"'     "Y88888P"       88                                                                                  
+                                                                                                                                  
+                                                                                                                                  
+                                                                                                                                  
+//           d8           88                       88888888ba              88                          88                            
+//         ,8P'           88    ,d                 88      "8b             88                          ""                            
+//        d8"             88    88                 88      ,8P             88                                                        
+//      ,8P'  ,adPPYYba,  88  MM88MMM  ,adPPYYba,  88aaaaaa8P'  ,adPPYba,  88  ,adPPYYba,   ,adPPYba,  88   ,adPPYba,   8b,dPPYba,   
+//     d8"    ""     `Y8  88    88     ""     `Y8  88""""88'   a8P_____88  88  ""     `Y8  a8"     ""  88  a8"     "8a  88P'   `"8a  
+//   ,8P'     ,adPPPPP88  88    88     ,adPPPPP88  88    `8b   8PP"""""""  88  ,adPPPPP88  8b          88  8b       d8  88       88  
+//  d8"       88,    ,88  88    88,    88,    ,88  88     `8b  "8b,   ,aa  88  88,    ,88  "8a,   ,aa  88  "8a,   ,a8"  88       88  
+// 8P'        `"8bbdP"Y8  88    "Y888  `"8bbdP"Y8  88      `8b  `"Ybbd8"'  88  `"8bbdP"Y8   `"Ybbd8"'  88   `"YbbdP"'   88       88  
+
+//      .only
+//      .skip
+describe('Endpoint POST /altaRelacion, crea la relecion "Seguir" de un usuario con otro.', () => {
+
+    //.only
+    //.skip
+    it('Default', async () => {
+
+        // Registramos el usuario a "Seguir"
+        let {email, DB_usuario, ResponseJSON} = await registerAndLogin();
+        const usuarioRelacionId = DB_usuario._id.toString();
+
+        // Registramos el usuario que "Seguirá"
+        ({email, DB_usuario, ResponseJSON} = await registerAndLogin());
+        const usuarioId = DB_usuario._id.toString();
+
+        // Enviando peticion 
+        Headers = {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer${ResponseJSON.token}`
+        }
+        Body = {};
+
+        ResponseText = await POST(`${__URL__}/altaRelacion?id=${usuarioRelacionId}`, Headers, Body);
+
+        // Verificando que se haya registrado en la base de datos
+        const DB_relacion = await (await db()).collection('relacion').findOne({usuarioId, usuarioRelacionId});
+        expect(DB_relacion.usuarioId).toBe(usuarioId);
+        expect(DB_relacion.usuarioRelacionId).toBe(usuarioRelacionId);
+
+    });
+
+});
+
+
+
+
+
+
+
+
+
+
+
+
+
