@@ -22,6 +22,10 @@ async function db () {
     }
 }
 
+function cl(value) {
+    console.log(value);
+}
+
 function sleep(milliseconds) {
     const date = Date.now();
     let currentDate = null;
@@ -723,16 +727,6 @@ describe('Endpoint GET /tweet, leer los tweets de un usuario', () => {
 
 
 
-
-
-
-
-
-
-
-
-
-
 // 88888888ba,    88888888888  88           88888888888  888888888888  88888888888  
 // 88      `"8b   88           88           88                88       88           
 // 88        `8b  88           88           88                88       88           
@@ -797,6 +791,7 @@ describe('Endpoint DELETE /tweet, eliminar un tweet', () => {
     });
 
 });
+
 
 
 
@@ -1097,6 +1092,89 @@ describe('Endpoint GET /banner, obtiene el archivo/recurso imagen del Banner por
     });
 
 });
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// 88888888ba     ,ad8888ba,     ad88888ba  888888888888                                        
+// 88      "8b   d8"'    `"8b   d8"     "8b      88                                             
+// 88      ,8P  d8'        `8b  Y8,              88                                             
+// 88aaaaaa8P'  88          88  `Y8aaaaa,        88                                             
+// 88""""""'    88          88    `"""""8b,      88                                             
+// 88           Y8,        ,8P          `8b      88                                             
+// 88            Y8a.    .a8P   Y8a     a8P      88                                             
+// 88             `"Y8888Y"'     "Y88888P"       88                                             
+                                                                                             
+                                                                                             
+                                                                                             
+//           d8                       88                          88                            
+//         ,8P'                       88                          ""                            
+//        d8"                         88                                                        
+//      ,8P'  8b,dPPYba,   ,adPPYba,  88  ,adPPYYba,   ,adPPYba,  88   ,adPPYba,   8b,dPPYba,   
+//     d8"    88P'   "Y8  a8P_____88  88  ""     `Y8  a8"     ""  88  a8"     "8a  88P'   `"8a  
+//   ,8P'     88          8PP"""""""  88  ,adPPPPP88  8b          88  8b       d8  88       88  
+//  d8"       88          "8b,   ,aa  88  88,    ,88  "8a,   ,aa  88  "8a,   ,a8"  88       88  
+// 8P'        88           `"Ybbd8"'  88  `"8bbdP"Y8   `"Ybbd8"'  88   `"YbbdP"'   88       88  
+
+//      .only
+//      .skip
+describe('Endpoint POST /relacion, crea la relecion "Seguir" de un usuario con otro.', () => {
+
+    //.only
+    //.skip
+    it('Default', async () => {
+
+        // Registramos el usuario a "Seguir"
+        let {email, DB_usuario, ResponseJSON} = await registerAndLogin();
+        const userRelacionId = DB_usuario._id.toString();
+
+        // Registramos el usuario que "Seguirá"
+        ({email, DB_usuario, ResponseJSON} = await registerAndLogin());
+        const userId = DB_usuario._id.toString();
+
+        // Enviando peticion
+        Headers = {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer${ResponseJSON.token}`
+        }
+        Body = {};
+
+        ResponseText = await POST(`${__URL__}/relacion?userRelacionId=${userRelacionId}`, Headers, Body);
+        
+        // Verificando que se haya registrado en la base de datos
+        const DB_relacion = await (await db()).collection('relacion').findOne({
+            _userId: ObjectId(userId),
+            _userRelacionId: ObjectId(userRelacionId)
+        });
+        expect(DB_relacion._userId.toString()).toBe(userId);
+        expect(DB_relacion._userRelacionId.toString()).toBe(userRelacionId);
+        
+        // Chequeamos que un usuario no se pueda "Seguir" a sí mismo
+        ResponseText = await POST(`${__URL__}/relacion?userRelacionId=${userId}`, Headers, Body);
+        expect(ResponseText).toContain('"userRelacionId" debe ser diferente del ID del usuario')
+        
+        // Chequeamos que no se pueda insertar el mismo registro duplicado
+        ResponseText = await POST(`${__URL__}/relacion?userRelacionId=${userRelacionId}`, Headers, Body);
+        expect(ResponseText).toContain('Ocurrió un error al intentar insertar relación Ya existe el registro en la BD')
+
+    });
+
+});
+
+
 
 
 
