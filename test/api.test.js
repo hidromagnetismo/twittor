@@ -22,6 +22,10 @@ async function db () {
     }
 }
 
+function cl(value) {
+    console.log(value);
+}
+
 function sleep(milliseconds) {
     const date = Date.now();
     let currentDate = null;
@@ -1160,6 +1164,82 @@ describe('Endpoint POST /altaRelacion, crea la relecion "Seguir" de un usuario c
     });
 
 });
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// 88888888ba,    88888888888  88           88888888888  888888888888  88888888888                                                          
+// 88      `"8b   88           88           88                88       88                                                                   
+// 88        `8b  88           88           88                88       88                                                                   
+// 88         88  88aaaaa      88           88aaaaa           88       88aaaaa                                                              
+// 88         88  88"""""      88           88"""""           88       88"""""                                                              
+// 88         8P  88           88           88                88       88                                                                   
+// 88      .a8P   88           88           88                88       88                                                                   
+// 88888888Y"'    88888888888  88888888888  88888888888       88       88888888888                                                          
+                                                                                                                                         
+                                                                                                                                         
+                                                                                                                                         
+//           d8  88                       88              88888888ba              88                          88                            
+//         ,8P'  88                       ""              88      "8b             88                          ""                            
+//        d8"    88                                       88      ,8P             88                                                        
+//      ,8P'     88,dPPYba,   ,adPPYYba,  88  ,adPPYYba,  88aaaaaa8P'  ,adPPYba,  88  ,adPPYYba,   ,adPPYba,  88   ,adPPYba,   8b,dPPYba,   
+//     d8"       88P'    "8a  ""     `Y8  88  ""     `Y8  88""""88'   a8P_____88  88  ""     `Y8  a8"     ""  88  a8"     "8a  88P'   `"8a  
+//   ,8P'        88       d8  ,adPPPPP88  88  ,adPPPPP88  88    `8b   8PP"""""""  88  ,adPPPPP88  8b          88  8b       d8  88       88  
+//  d8"          88b,   ,a8"  88,    ,88  88  88,    ,88  88     `8b  "8b,   ,aa  88  88,    ,88  "8a,   ,aa  88  "8a,   ,a8"  88       88  
+// 8P'           8Y"Ybbd8"'   `"8bbdP"Y8  88  `"8bbdP"Y8  88      `8b  `"Ybbd8"'  88  `"8bbdP"Y8   `"Ybbd8"'  88   `"YbbdP"'   88       88  
+//                                       ,88                                                                                                
+//                                     888P"                                                                                                
+
+//      .only
+//      .skip
+describe('Endpoint DELETE /bajaRelacion, realiza el borrado de la relacion entre usuarios', () => {
+    
+    //.only
+    //.skip
+    it('Default', async () => {
+
+        // Registramos el usuario a "Seguir"
+        let {email, DB_usuario, ResponseJSON} = await registerAndLogin();
+        const usuarioRelacionId = DB_usuario._id.toString();
+
+        // Registramos el usuario que "Seguirá"
+        ({email, DB_usuario, ResponseJSON} = await registerAndLogin());
+        const usuarioId = DB_usuario._id.toString();
+
+        // Creamos una relacion
+        Headers = {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer${ResponseJSON.token}`
+        }
+        Body = {};
+        ResponseText = await POST(`${__URL__}/altaRelacion?id=${usuarioRelacionId}`, Headers, Body);
+
+        // Verificando que se haya registrado en la base de datos
+        let DB_relacion = await (await db()).collection('relacion').findOne({usuarioId, usuarioRelacionId});
+        expect(DB_relacion.usuarioId).toBe(usuarioId);
+        expect(DB_relacion.usuarioRelacionId).toBe(usuarioRelacionId);
+
+        // Ahora procedemos a borrar la relacion previamente creada
+        ResponseText = await DELETE(`${__URL__}/bajaRelacion?id=${usuarioRelacionId}`, Headers);
+        
+        // Verificamos que la realacion ya no exista en la base de datos
+        DB_relacion = await (await db()).collection('relacion').findOne({usuarioId, usuarioRelacionId});
+        expect(DB_relacion).toBeNull();
+
+    });
+
+});
+
 
 
 
