@@ -444,7 +444,7 @@ describe('Endpoint GET /verPerfil, perfil del usuario luego de haberse logueado'
 
 //      .only
 //      .skip
-describe('Endpoint GET /modificarPerfil, modificando el perfil del usuario', () => {
+describe('Endpoint PUT /modificarPerfil, modificando el perfil del usuario', () => {
     
     //.only
     //.skip

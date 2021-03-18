@@ -87,6 +87,7 @@
 @userID = 602d7456c5053e97fdca47c0
 
 ### Registro de usuario
+# @name Registro
 POST {{__URL__}}/registro
 Content-Type: application/json
 
@@ -122,7 +123,7 @@ Content-Type: application/json
 #                            "Y8bbdP"                    
 
 ### Login
-# @name __LOGIN__
+# @name Login
 POST {{__URL__}}/login
 Content-Type: application/json
 
@@ -133,7 +134,7 @@ Content-Type: application/json
 
 ###
 
-@token = {{__LOGIN__.response.body.token}}
+@token = {{Login.response.body.token}}
 
 
 
@@ -165,6 +166,7 @@ Content-Type: application/json
 # 88           `"Ybbd8"'  88            88     88  88  
 
 ### Ver Perfil
+# @name Ver_Perfil
 GET {{__URL__}}/verPerfil?id={{userID}}
 Content-Type: application/json
 Authorization: Bearer{{token}}
@@ -201,6 +203,7 @@ Authorization: Bearer{{token}}
 # 88           `"Ybbd8"'  88            88     88  88                                               
 
 ### Modificar Perfil
+# @name Modificar_Perfil
 PUT {{__URL__}}/modificarPerfil
 Content-Type: application/json
 Authorization: Bearer{{token}}
@@ -248,6 +251,7 @@ Authorization: Bearer{{token}}
 # 8P'           "Y888      YP      YP       `"Ybbd8"'   `"Ybbd8"'    "Y888  
 
 ### Insertar un Tweet
+# @name Insertar_Tweet
 POST {{__URL__}}/tweet
 Content-Type: application/json
 Authorization: Bearer{{token}}
@@ -288,14 +292,14 @@ Authorization: Bearer{{token}}
 # 8P'           88   `"Ybbd8"'   `"YbbdP"'   88      YP      YP       `"Ybbd8"'   `"Ybbd8"'    "Y888  `"YbbdP"'  
 
 ### Obtener los Tweets de un usuario por su userId
-# @name __TWEETS__
+# @name Obtener_Tweets
 GET {{__URL__}}/leoTweets?id={{userID}}&pagina=1
 Content-Type: application/json
 Authorization: Bearer{{token}}
 
 ###
 
-@tweetId = {{__TWEETS__.response.body.$[0]._id}}
+@tweetId = {{Obtener_Tweets.response.body.$[0]._id}}
 
 
 
@@ -332,6 +336,7 @@ Authorization: Bearer{{token}}
 # 8P'        `"Ybbd8"'  88  88  88      88      88  88  88       88  `"8bbdP"Y8  88          88      YP      YP       `"Ybbd8"'   `"Ybbd8"'    "Y888  
 
 ### Eliminar un Tweet de un usuario
+# @name Eliminar_Tweet
 DELETE {{__URL__}}/eliminarTweet?id={{tweetId}}
 Content-Type: application/json
 Authorization: Bearer{{token}}
@@ -371,6 +376,7 @@ Authorization: Bearer{{token}}
 # 8P'        `"YbbdP"'   `"YbbdP'Y8  8Y"Ybbd8"'   88  88       d8'          `8b   "8"      `"8bbdP"Y8    "Y888  `"8bbdP"Y8  88          
 
 ### Subir la imagen del Avatar al servidor
+# @name Subir_Avatar
 POST {{__URL__}}/subirAvatar
 Content-Type: multipart/form-data; boundary=___BOUNDARY___
 Authorization: Bearer{{token}}
@@ -384,9 +390,6 @@ Content-Disposition: form-data; name="avatar"; filename="Pablo-Tilotta.jpeg"
 
 ###
 
-POST {{__URL__}}/subirAvatar
-
-###
 
 
 
@@ -415,6 +418,7 @@ POST {{__URL__}}/subirAvatar
 # 8P'        `"YbbdP"'   8Y"Ybbd8"'    "Y888  `"Ybbd8"'  88       88   `"Ybbd8"'  88       d8'          `8b   "8"      `"8bbdP"Y8    "Y888  `"8bbdP"Y8  88          
 
 ### Obtener la imagen del Avatar por el ID del usuario
+# @name Ver_Avatar
 GET {{__URL__}}/obtenerAvatar?id={{userID}}
 
 ###
@@ -452,6 +456,7 @@ GET {{__URL__}}/obtenerAvatar?id={{userID}}
 # `"YbbdP"'   `"YbbdP'Y8  8Y"Ybbd8"'   88  88          88888888P"   `"8bbdP"Y8  88       88  88       88   `"Ybbd8"'  88          
 
 ### Subir la imagen del Banner al servidor
+# @name Subir_Banner
 POST {{__URL__}}/subirBanner
 Content-Type: multipart/form-data; boundary=___BOUNDARY___
 Authorization: Bearer{{token}}
@@ -494,6 +499,7 @@ Content-Disposition: form-data; name="banner"; filename="banner-pablo-tilotta.jp
 # 8P'        `"YbbdP"'   8Y"Ybbd8"'    "Y888  `"Ybbd8"'  88       88   `"Ybbd8"'  88          88888888P"   `"8bbdP"Y8  88       88  88       88   `"Ybbd8"'  88          
 
 ### Obtener la imagen del Banner por el ID del usuario
+# @name Ver_Banner
 GET {{__URL__}}/obtenerBanner?id={{userID}}
 
 ###
@@ -512,6 +518,7 @@ GET {{__URL__}}/obtenerBanner?id={{userID}}
 @userToFollowID = 602d7456c5053e97fdca47c1
 
 ### Registro del usuario a seguir
+# @name Registrar_Usuario_a_Seguir
 POST {{__URL__}}/registro
 Content-Type: application/json
 
@@ -548,6 +555,7 @@ Content-Type: application/json
 # 8P'        `"8bbdP"Y8  88    "Y888  `"8bbdP"Y8  88      `8b  `"Ybbd8"'  88  `"8bbdP"Y8   `"Ybbd8"'  88   `"YbbdP"'   88       88  
 
 ### Crea la relecion "Seguir" de un usuario con otro
+# @name Crear_Relacion
 POST {{__URL__}}/altaRelacion?id={{userToFollowID}}
 Content-Type: application/json
 Authorization: Bearer{{token}}
@@ -585,6 +593,7 @@ Authorization: Bearer{{token}}
 # 8P'        `"Ybbd8"'   `"YbbdP"'   88       88  `"YbbdP"'   `"YbbdP'Y8  88    "Y888  `"8bbdP"Y8  88      `8b  `"Ybbd8"'  88  `"8bbdP"Y8   `"Ybbd8"'  88   `"YbbdP"'   88       88  
 
 ### Chequea si hay relacion entre 2 usuarios
+# @name Chequear_Relacion
 GET {{__URL__}}/consultaRelacion?id={{userToFollowID}}
 Content-Type: application/json
 Authorization: Bearer{{token}}
@@ -626,6 +635,7 @@ Authorization: Bearer{{token}}
 #                                     888P"                                                                                                
 
 ### Realiza el borrado de la relacion entre usuarios
+# @name Eliminar_Relacion
 DELETE {{__URL__}}/bajaRelacion?id={{userToFollowID}}
 Content-Type: application/json
 Authorization: Bearer{{token}}
