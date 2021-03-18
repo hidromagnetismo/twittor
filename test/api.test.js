@@ -1253,3 +1253,100 @@ describe('Endpoint DELETE /bajaRelacion, realiza el borrado de la relacion entre
 
 
 
+
+//   ,ad8888ba,   88888888888  888888888888                                                                                                                                 
+//  d8"'    `"8b  88                88                                                                                                                                      
+// d8'            88                88                                                                                                                                      
+// 88             88aaaaa           88                                                                                                                                      
+// 88      88888  88"""""           88                                                                                                                                      
+// Y8,        88  88                88                                                                                                                                      
+//  Y8a.    .a88  88                88                                                                                                                                      
+//   `"Y88888P"   88888888888       88                                                                                                                                      
+                                                                                                                                                                         
+                                                                                                                                                                         
+                                                                                                                                                                         
+//                                                               88                       88888888ba              88                          88                            
+//                                                               88    ,d                 88      "8b             88                          ""                            
+//                                                               88    88                 88      ,8P             88                                                        
+//  ,adPPYba,   ,adPPYba,   8b,dPPYba,   ,adPPYba,  88       88  88  MM88MMM  ,adPPYYba,  88aaaaaa8P'  ,adPPYba,  88  ,adPPYYba,   ,adPPYba,  88   ,adPPYba,   8b,dPPYba,   
+// a8"     ""  a8"     "8a  88P'   `"8a  I8[    ""  88       88  88    88     ""     `Y8  88""""88'   a8P_____88  88  ""     `Y8  a8"     ""  88  a8"     "8a  88P'   `"8a  
+// 8b          8b       d8  88       88   `"Y8ba,   88       88  88    88     ,adPPPPP88  88    `8b   8PP"""""""  88  ,adPPPPP88  8b          88  8b       d8  88       88  
+// "8a,   ,aa  "8a,   ,a8"  88       88  aa    ]8I  "8a,   ,a88  88    88,    88,    ,88  88     `8b  "8b,   ,aa  88  88,    ,88  "8a,   ,aa  88  "8a,   ,a8"  88       88  
+//  `"Ybbd8"'   `"YbbdP"'   88       88  `"YbbdP"'   `"YbbdP'Y8  88    "Y888  `"8bbdP"Y8  88      `8b  `"Ybbd8"'  88  `"8bbdP"Y8   `"Ybbd8"'  88   `"YbbdP"'   88       88  
+
+//      .only
+//      .skip
+describe('Endpoint GET /consultaRelacion, chequea si hay relacion entre 2 usuarios', () => {
+
+    //.only
+    //.skip
+    it('Default', async () => {
+
+        // Registramos el usuario a "Seguir"
+        let {email, DB_usuario, ResponseJSON} = await registerAndLogin();
+        const usuarioRelacionId = DB_usuario._id.toString();
+
+        // Registramos el usuario que "Seguirá"
+        ({email, DB_usuario, ResponseJSON} = await registerAndLogin());
+        const usuarioId = DB_usuario._id.toString();
+
+        // Enviando peticion 
+        Headers = {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer${ResponseJSON.token}`
+        }
+        Body = {};
+
+        ResponseText = await POST(`${__URL__}/altaRelacion?id=${usuarioRelacionId}`, Headers, Body);
+        
+        // Verificando que se haya registrado en la base de datos
+        const DB_relacion = await (await db()).collection('relacion').findOne({usuarioId, usuarioRelacionId});
+        expect(DB_relacion.usuarioId).toBe(usuarioId);
+        expect(DB_relacion.usuarioRelacionId).toBe(usuarioRelacionId);
+        
+        // Probamos el este endpoint para consultar si hay relacion entre estos 2 usuarios
+        ResponseText = await GET(`${__URL__}/consultaRelacion?id=${usuarioRelacionId}`, Headers, Body);
+        ResponseJSON = JSON.parse(ResponseText);
+
+        // Confirmando respuesta
+        expect(ResponseJSON.status).toBeDefined();
+        expect(ResponseJSON.status).toBeTruthy();
+
+        // Eliminamos la relacion
+        ResponseText = await DELETE(`${__URL__}/bajaRelacion?id=${usuarioRelacionId}`, Headers);
+
+        // Probamos nuevamente
+        ResponseText = await GET(`${__URL__}/consultaRelacion?id=${usuarioRelacionId}`, Headers, Body);
+        ResponseJSON = JSON.parse(ResponseText);
+
+        // Confirmando respuesta
+        expect(ResponseJSON.status).toBeDefined();
+        expect(ResponseJSON.status).toBeFalsy();
+    });
+
+});
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// // robo3t > DB twittor (Right Click) > Open Shell:
+// {
+//     db.usuarios.remove({});
+//     db.tweet.remove({});
+//     db.relacion.remove({});
+// }
