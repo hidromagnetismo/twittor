@@ -88,6 +88,7 @@
 @userID = 602d7456c5053e97fdca47c0
 
 ### Registro de usuario
+# @name Registro
 POST {{__URL__}}/registro
 Content-Type: application/json
 
@@ -123,7 +124,7 @@ Content-Type: application/json
 #                            "Y8bbdP"                    
 
 ### Login
-# @name __LOGIN__
+# @name Login
 POST {{__URL__}}/login
 Content-Type: application/json
 
@@ -134,7 +135,7 @@ Content-Type: application/json
 
 ###
 
-@token = {{__LOGIN__.response.body.token}}
+@token = {{Login.response.body.token}}
 
 
 
@@ -166,6 +167,7 @@ Content-Type: application/json
 # 88           `"Ybbd8"'  88            88     88  88  
 
 ### Ver Perfil
+# @name Ver_Perfil
 GET {{__URL__}}/verPerfil?id={{userID}}
 Content-Type: application/json
 Authorization: Bearer{{token}}
@@ -202,6 +204,7 @@ Authorization: Bearer{{token}}
 # 88           `"Ybbd8"'  88            88     88  88                                               
 
 ### Modificar Perfil
+# @name Modificar_Perfil
 PUT {{__URL__}}/modificarPerfil
 Content-Type: application/json
 Authorization: Bearer{{token}}
@@ -249,6 +252,7 @@ Authorization: Bearer{{token}}
 # 8P'           "Y888      YP      YP       `"Ybbd8"'   `"Ybbd8"'    "Y888  
 
 ### Insertar un Tweet
+# @name Insertar_Tweet
 POST {{__URL__}}/tweet
 Content-Type: application/json
 Authorization: Bearer{{token}}
@@ -289,13 +293,13 @@ Authorization: Bearer{{token}}
 # 8P'           "Y888      YP      YP       `"Ybbd8"'   `"Ybbd8"'    "Y888  
 
 ### Obtener los Tweets de un usuario por su userId
-# @name __TWEETS__
+# @name Obtener_Tweets
 GET {{__URL__}}/tweet?userId={{userID}}&limit=18&page=1
 Content-Type: application/json
 
 ###
 
-@tweetId = {{__TWEETS__.response.body.$[0]._id}}
+@tweetId = {{Obtener_Tweets.response.body.$[0]._id}}
 
 
 
@@ -332,6 +336,7 @@ Content-Type: application/json
 # 8P'           "Y888      YP      YP       `"Ybbd8"'   `"Ybbd8"'    "Y888         
 
 ### Eliminar un Tweet de un usuario
+# @name Eliminar_Tweet
 DELETE {{__URL__}}/tweet?id={{tweetId}}
 Content-Type: application/json
 Authorization: Bearer{{token}}
@@ -371,6 +376,7 @@ Authorization: Bearer{{token}}
 # 8P'        `"8bbdP"Y8      "8"      `"8bbdP"Y8    "Y888  `"8bbdP"Y8  88          
 
 ### Subir la imagen del Avatar al servidor
+# @name Subir_Avatar
 POST {{__URL__}}/avatar
 Content-Type: multipart/form-data; boundary=___BOUNDARY___
 Authorization: Bearer{{token}}
@@ -384,9 +390,6 @@ Content-Disposition: form-data; name="avatar"; filename="Liscano.Natanael.PNG"
 
 ###
 
-POST {{__URL__}}/avatar
-
-###
 
 
 
@@ -415,6 +418,7 @@ POST {{__URL__}}/avatar
 # 8P'        `"8bbdP"Y8      "8"      `"8bbdP"Y8    "Y888  `"8bbdP"Y8  88          
 
 ### Obtener la imagen del Avatar por el ID del usuario
+# @name Ver_Avatar
 GET {{__URL__}}/avatar?userId={{userID}}
 
 ###
@@ -452,6 +456,7 @@ GET {{__URL__}}/avatar?userId={{userID}}
 # 8P'           8Y"Ybbd8"'   `"8bbdP"Y8  88       88  88       88   `"Ybbd8"'  88          
 
 ### Subir la imagen del Banner al servidor
+# @name Subir_Banner
 POST {{__URL__}}/banner
 Content-Type: multipart/form-data; boundary=___BOUNDARY___
 Authorization: Bearer{{token}}
@@ -494,6 +499,7 @@ Content-Disposition: form-data; name="banner"; filename="web-designer"
 # 8P'           8Y"Ybbd8"'   `"8bbdP"Y8  88       88  88       88   `"Ybbd8"'  88          
 
 ### Obtener la imagen del Banner por el ID del usuario
+# @name Ver_Banner
 GET {{__URL__}}/banner?userId={{userID}}
 
 ###
@@ -512,6 +518,7 @@ GET {{__URL__}}/banner?userId={{userID}}
 @userToFollowID = 602d7456c5053e97fdca47c1
 
 ### Registro del usuario a seguir
+# @name Registrar_Usuario_a_Seguir
 POST {{__URL__}}/registro
 Content-Type: application/json
 
@@ -548,6 +555,7 @@ Content-Type: application/json
 # 8P'        88           `"Ybbd8"'  88  `"8bbdP"Y8   `"Ybbd8"'  88   `"YbbdP"'   88       88  
 
 ### Crea la relecion "Seguir" de un usuario con otro
+# @name Crear_Relacion
 POST {{__URL__}}/relacion?userRelacionId={{userToFollowID}}
 Content-Type: application/json
 Authorization: Bearer{{token}}
@@ -555,6 +563,7 @@ Authorization: Bearer{{token}}
 ###
 
 ### userId = userRelacionId
+# @name Intentar_Seguirse_a_si_Mismo
 POST {{__URL__}}/relacion?userRelacionId={{userID}}
 Content-Type: application/json
 Authorization: Bearer{{token}}
@@ -564,6 +573,34 @@ Authorization: Bearer{{token}}
 
 
 
+
+#   ,ad8888ba,   88888888888  888888888888                                                     
+#  d8"'    `"8b  88                88                                                          
+# d8'            88                88                                                          
+# 88             88aaaaa           88                                                          
+# 88      88888  88"""""           88                                                          
+# Y8,        88  88                88                                                          
+#  Y8a.    .a88  88                88                                                          
+#   `"Y88888P"   88888888888       88                                                          
+                                                                                             
+                                                                                             
+                                                                                             
+#           d8                       88                          88                            
+#         ,8P'                       88                          ""                            
+#        d8"                         88                                                        
+#      ,8P'  8b,dPPYba,   ,adPPYba,  88  ,adPPYYba,   ,adPPYba,  88   ,adPPYba,   8b,dPPYba,   
+#     d8"    88P'   "Y8  a8P_____88  88  ""     `Y8  a8"     ""  88  a8"     "8a  88P'   `"8a  
+#   ,8P'     88          8PP"""""""  88  ,adPPPPP88  8b          88  8b       d8  88       88  
+#  d8"       88          "8b,   ,aa  88  88,    ,88  "8a,   ,aa  88  "8a,   ,a8"  88       88  
+# 8P'        88           `"Ybbd8"'  88  `"8bbdP"Y8   `"Ybbd8"'  88   `"YbbdP"'   88       88  
+
+### Chequea si hay relacion entre 2 usuarios
+# @name Chequear_Relacion
+GET {{__URL__}}/relacion?userRelacionId={{userToFollowID}}
+Content-Type: application/json
+Authorization: Bearer{{token}}
+
+###
 
 
 
@@ -598,6 +635,7 @@ Authorization: Bearer{{token}}
 # 8P'        88           `"Ybbd8"'  88  `"8bbdP"Y8   `"Ybbd8"'  88   `"YbbdP"'   88       88  
 
 ### Realiza el borrado de la relacion entre usuarios
+# @name Eliminar_Relacion
 DELETE {{__URL__}}/relacion?userRelacionId={{userToFollowID}}
 Content-Type: application/json
 Authorization: Bearer{{token}}

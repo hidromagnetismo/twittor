@@ -444,7 +444,7 @@ describe('Endpoint GET /verPerfil, perfil del usuario luego de haberse logueado'
 
 //      .only
 //      .skip
-describe('Endpoint GET /modificarPerfil, modificando el perfil del usuario', () => {
+describe('Endpoint PUT /modificarPerfil, modificando el perfil del usuario', () => {
     
     //.only
     //.skip
@@ -1249,6 +1249,95 @@ describe('Endpoint DELETE /relacion, realiza el borrado de la relacion entre usu
         });
         expect(DB_relacion).toBeNull();
 
+    });
+
+});
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+//   ,ad8888ba,   88888888888  888888888888                                                     
+//  d8"'    `"8b  88                88                                                          
+// d8'            88                88                                                          
+// 88             88aaaaa           88                                                          
+// 88      88888  88"""""           88                                                          
+// Y8,        88  88                88                                                          
+//  Y8a.    .a88  88                88                                                          
+//   `"Y88888P"   88888888888       88                                                          
+                                                                                             
+                                                                                             
+                                                                                             
+//           d8                       88                          88                            
+//         ,8P'                       88                          ""                            
+//        d8"                         88                                                        
+//      ,8P'  8b,dPPYba,   ,adPPYba,  88  ,adPPYYba,   ,adPPYba,  88   ,adPPYba,   8b,dPPYba,   
+//     d8"    88P'   "Y8  a8P_____88  88  ""     `Y8  a8"     ""  88  a8"     "8a  88P'   `"8a  
+//   ,8P'     88          8PP"""""""  88  ,adPPPPP88  8b          88  8b       d8  88       88  
+//  d8"       88          "8b,   ,aa  88  88,    ,88  "8a,   ,aa  88  "8a,   ,a8"  88       88  
+// 8P'        88           `"Ybbd8"'  88  `"8bbdP"Y8   `"Ybbd8"'  88   `"YbbdP"'   88       88  
+
+//      .only
+//      .skip
+describe('Endpoint GET /relacion, chequea si hay relacion entre 2 usuarios', () => {
+
+    //.only
+    //.skip
+    it('Default', async () => {
+
+        // Registramos el usuario a "Seguir"
+        let {email, DB_usuario, ResponseJSON} = await registerAndLogin();
+        const userRelacionId = DB_usuario._id.toString();
+
+        // Registramos el usuario que "Seguirá"
+        ({email, DB_usuario, ResponseJSON} = await registerAndLogin());
+        const userId = DB_usuario._id.toString();
+
+        // Enviando peticion
+        Headers = {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer${ResponseJSON.token}`
+        }
+        Body = {};
+
+        ResponseText = await POST(`${__URL__}/relacion?userRelacionId=${userRelacionId}`, Headers, Body);
+        
+        // Verificando que se haya registrado en la base de datos
+        const DB_relacion = await (await db()).collection('relacion').findOne({
+            _userId: ObjectId(userId),
+            _userRelacionId: ObjectId(userRelacionId)
+        });
+        expect(DB_relacion._userId.toString()).toBe(userId);
+        expect(DB_relacion._userRelacionId.toString()).toBe(userRelacionId);
+        
+        // Probamos este endpoint para consultar si hay relacion entre estos 2 usuarios
+        ResponseText = await GET(`${__URL__}/relacion?userRelacionId=${userRelacionId}`, Headers, Body);
+        ResponseJSON = JSON.parse(ResponseText);
+
+        // Confirmando respuesta
+        expect(ResponseJSON.status).toBeDefined();
+        expect(ResponseJSON.status).toBeTruthy();
+
+        // Eliminamos la relacion
+        ResponseText = await DELETE(`${__URL__}/relacion?userRelacionId=${userRelacionId}`, Headers);
+
+        // Probamos nuevamente
+        ResponseText = await GET(`${__URL__}/relacion?userRelacionId=${userRelacionId}`, Headers, Body);
+        ResponseJSON = JSON.parse(ResponseText);
+
+        // Confirmando respuesta
+        expect(ResponseJSON.status).toBeDefined();
+        expect(ResponseJSON.status).toBeFalsy();
     });
 
 });
