@@ -140,12 +140,12 @@ describe('Endpoint POST /registro, registro de usuario', () => {
     it('Default', async () => {
 
         // Enviando peticion 
-        Headers = {
+        let Headers = {
             'Content-Type': 'application/json'
         }
         const date = parseInt(Date.now());
         const email = `pablot${date}@registro.com`;
-        Body = {
+        let Body = {
             "email": email,
             "password": "123456",
             "nombre": `Pablo ${date}`,
@@ -197,10 +197,10 @@ async function registerAndLogin() {
     const password = `123456_${date}`;
 
     // Registrando/guardando el usuario en MongoDB
-    Headers = {
+    let Headers = {
         'Content-Type': 'application/json'
     }
-    Body = {
+    let Body = {
         "email": email,
         "password": password,
         "nombre": `Pablo ${date}`,
@@ -262,13 +262,13 @@ describe('Endpoint POST /login, login', () => {
     //.skip
     it("Respuesta para usuario no resgistrado", async () => {
         
-        Headers = {
+        let Headers = {
             'Content-Type': 'application/json'
         }
 
         const __NO_EXIST__ = 'no@existo.tld';
 
-        Body = {
+        let Body = {
             email: __NO_EXIST__,
             password: '123'
         }
@@ -291,10 +291,10 @@ describe('Endpoint POST /login, login', () => {
         const password = `contraseña_correcta`;
         
         // Registrando/guardando el usuario en MongoDB
-        Headers = {
+        let Headers = {
             'Content-Type': 'application/json'
         }
-        Body = {
+        let Body = {
             "email": email,
             "password": password,
             "nombre": `Pablo ${date}`,
@@ -381,7 +381,7 @@ describe('Endpoint GET /verPerfil, perfil del usuario luego de haberse logueado'
         let {email, DB_usuario, ResponseJSON} = await registerAndLogin();
         
         // Realizando petición con el token obtenido
-        Headers = {
+        let Headers = {
             'Content-Type': 'application/json',
             'Authorization': `Bearer${ResponseJSON.token}`
         }
@@ -453,7 +453,7 @@ describe('Endpoint PUT /modificarPerfil, modificando el perfil del usuario', () 
         let {email, DB_usuario, ResponseJSON} = await registerAndLogin();
         
         // Realizando petición con el token obtenido
-        Headers = {
+        let Headers = {
             'Content-Type': 'application/json',
             'Authorization': `Bearer${ResponseJSON.token}`
         }
@@ -462,7 +462,7 @@ describe('Endpoint PUT /modificarPerfil, modificando el perfil del usuario', () 
         const biografia = "Profesional de los BITs, Analista Funcional SR, Programador experto desde hace mas de 31 años. Instructor de UDEMY y apasionado de la informática. #UDEMY";
         const sitioWeb = "https://www.pablotilotta.com";
 
-        Body = {
+        let Body = {
             ubicacion,
             biografia,
             sitioWeb
@@ -548,13 +548,13 @@ describe('Endpoint POST /tweet, insertar un Tweet', () => {
         let {email, DB_usuario, ResponseJSON} = await registerAndLogin();
 
         // Enviando peticion 
-        Headers = {
+        let Headers = {
             'Content-Type': 'application/json',
             'Authorization': `Bearer${ResponseJSON.token}`
         }
         const date = parseInt(Date.now());
         const mensaje = `Es es mi primer tweet ${date}`;
-        Body = {
+        let Body = {
             mensaje
         }
         ResponseText = await POST(`${__URL__}/tweet`, Headers, Body);
@@ -634,7 +634,7 @@ describe('Endpoint GET /leoTweets, leer los tweets de un usuario', () => {
         }
 
         // Enviando peticion 
-        Headers = {
+        let Headers = {
             'Content-Type': 'application/json',
             'Authorization': `Bearer${ResponseJSON.token}`
         }
@@ -687,7 +687,7 @@ describe('Endpoint GET /leoTweets, leer los tweets de un usuario', () => {
         }
 
         // Enviando peticiones 
-        Headers = {
+        let Headers = {
             'Content-Type': 'application/json',
             'Authorization': `Bearer${ResponseJSON.token}`
         }
@@ -762,13 +762,13 @@ describe('Endpoint DELETE /eliminarTweet, eliminar un tweet', () => {
         let {email, DB_usuario, ResponseJSON} = await registerAndLogin();
 
         // Creando el tweet
-        Headers = {
+        let Headers = {
             'Content-Type': 'application/json',
             'Authorization': `Bearer${ResponseJSON.token}`
         }
         const date = parseInt(Date.now());
         const mensaje = `Es es mi primer tweet ${date}`;
-        Body = {
+        let Body = {
             mensaje
         }
         ResponseText = await POST(`${__URL__}/tweet`, Headers, Body);
@@ -842,7 +842,7 @@ describe('Endpoint POST /subirAvatar, subir la imagen del Avatar al servidor', (
         let {email, DB_usuario, ResponseJSON} = await registerAndLogin();
 
         // Llenamos la data especificando el archivo a subir y su clave=key para obtenerlo del Request
-        Data = {
+        let Data = {
             authorization: `Bearer${ResponseJSON.token}`,
             key: 'avatar',
             filePath: `${__dirname}/resources/avatars/Pablo-Tilotta.jpeg`
@@ -911,7 +911,7 @@ describe('Endpoint GET /obtenerAvatar, obtiene el archivo/recurso imagen del Ava
         let {email, DB_usuario, ResponseJSON} = await registerAndLogin();
 
         // Llenamos la data especificando el archivo a subir y su clave=key para obtenerlo del Request
-        Data = {
+        let Data = {
             authorization: `Bearer${ResponseJSON.token}`,
             key: 'avatar',
             filePath: `${__dirname}/resources/avatars/Pablo-Tilotta.jpeg`
@@ -989,7 +989,7 @@ describe('Endpoint POST /subirBanner, subir la imagen del Banner al servidor', (
         let {email, DB_usuario, ResponseJSON} = await registerAndLogin();
 
         // Llenamos la data especificando el archivo a subir y su clave=key para obtenerlo del Request
-        Data = {
+        let Data = {
             authorization: `Bearer${ResponseJSON.token}`,
             key: 'banner',
             filePath: `${__dirname}/resources/banners/banner-pablo-tilotta.jpg`
@@ -1062,7 +1062,7 @@ describe('Endpoint GET /obtenerBanner, obtiene el archivo/recurso imagen del Ban
         let {email, DB_usuario, ResponseJSON} = await registerAndLogin();
 
         // Llenamos la data especificando el archivo a subir y su clave=key para obtenerlo del Request
-        Data = {
+        let Data = {
             authorization: `Bearer${ResponseJSON.token}`,
             key: 'banner',
             filePath: `${__dirname}/resources/banners/banner-pablo-tilotta.jpg`
@@ -1148,11 +1148,11 @@ describe('Endpoint POST /altaRelacion, crea la relecion "Seguir" de un usuario c
         const usuarioId = DB_usuario._id.toString();
 
         // Enviando peticion 
-        Headers = {
+        let Headers = {
             'Content-Type': 'application/json',
             'Authorization': `Bearer${ResponseJSON.token}`
         }
-        Body = {};
+        let Body = {};
 
         ResponseText = await POST(`${__URL__}/altaRelacion?id=${usuarioRelacionId}`, Headers, Body);
 
@@ -1217,11 +1217,11 @@ describe('Endpoint DELETE /bajaRelacion, realiza el borrado de la relacion entre
         const usuarioId = DB_usuario._id.toString();
 
         // Creamos una relacion
-        Headers = {
+        let Headers = {
             'Content-Type': 'application/json',
             'Authorization': `Bearer${ResponseJSON.token}`
         }
-        Body = {};
+        let Body = {};
         ResponseText = await POST(`${__URL__}/altaRelacion?id=${usuarioRelacionId}`, Headers, Body);
 
         // Verificando que se haya registrado en la base de datos
@@ -1291,11 +1291,11 @@ describe('Endpoint GET /consultaRelacion, chequea si hay relacion entre 2 usuari
         const usuarioId = DB_usuario._id.toString();
 
         // Enviando peticion 
-        Headers = {
+        let Headers = {
             'Content-Type': 'application/json',
             'Authorization': `Bearer${ResponseJSON.token}`
         }
-        Body = {};
+        let Body = {};
 
         ResponseText = await POST(`${__URL__}/altaRelacion?id=${usuarioRelacionId}`, Headers, Body);
         
@@ -1325,6 +1325,159 @@ describe('Endpoint GET /consultaRelacion, chequea si hay relacion entre 2 usuari
     });
 
 });
+
+
+
+
+
+
+
+
+
+
+
+                                                            
+// 888b      88    ,ad8888ba,  888888888888    db              
+// 8888b     88   d8"'    `"8b      88        d88b             
+// 88 `8b    88  d8'        `8b     88       d8'`8b            
+// 88  `8b   88  88          88     88      d8'  `8b      888  
+// 88   `8b  88  88          88     88     d8YaaaaY8b     888  
+// 88    `8b 88  Y8,        ,8P     88    d8""""""""8b         
+// 88     `8888   Y8a.    .a8P      88   d8'        `8b   888  
+// 88      `888    `"Y8888Y"'       88  d8'          `8b  888  
+
+// La algoritmia para obtener la lista de usuarios en el archivo:
+// bd/leoUsuariosTodos.go, escrita por el Tutor Pablo Tilotta esta mal
+// de raiz, porque primero se hace una busqueda y se limita el resultado a
+// 20 registros, esto hace que en este punto si los usuarios relacionados 
+// estan fuera de esa paginacion hara que no se obtenga ninguna lista.
+// Adicionalmente se realizan muchas consultas a la base de datos para obtener esa lista.
+
+// En lo referente a este Test, es evidente que va a fallar si ya existen mas 
+// de 20 usuarios en la base de datos, ya que el chequeo de los datos que se hace con
+// un aggregate directamente a MongoDB y esta bien echo y se trae reultados, pero la consulta con
+// Golang hecha por Pablo Tilotta no va a traerse nada.
+
+// La forma de probar este test es quitando el ".skip" y colocando el ".only"
+// y ademas la base de datos debe de estar vacia.
+
+async function getListaUsuarios(__USUARIO_ID__, __SEARCH__, __TYPE__, __PAGE__) {
+
+    let __OPERATOR__ = {
+        'new': '$ne',
+        'follow': '$eq',
+    }
+
+    const limit = 20;
+    const DB_cursor = await (await db()).collection('usuarios').aggregate([
+        {$match: {$and: [
+            {nombre: {$regex: '(?i)'+__SEARCH__}},
+            {_id: {$ne: ObjectId(__USUARIO_ID__)}},
+        ]}},
+        {$lookup:{
+            from: 'relacion',
+            let: {local_id: {$toString: '$_id'}},
+            pipeline: [
+                {$match:{$expr: {$eq: ['$usuarioRelacionId', '$$local_id']}}}, 
+                {$project: {usuarioId: 1, _id: 0}},
+            ],
+            as: 'relaciones',
+        }},
+        {$match: {'relaciones.usuarioId': {[__OPERATOR__[__TYPE__]]: __USUARIO_ID__}}},
+        {$project: {relaciones: 0}},
+        {$sort: {nombre: 1}},
+        {$skip: (__PAGE__-1)*limit},
+        {$limit: limit},
+    ]);
+ 
+    return await DB_cursor.toArray();
+}
+
+//   ,ad8888ba,   88888888888  888888888888                                                                                                        
+//  d8"'    `"8b  88                88                                                                                                             
+// d8'            88                88                                                                                                             
+// 88             88aaaaa           88                                                                                                             
+// 88      88888  88"""""           88                                                                                                             
+// Y8,        88  88                88                                                                                                             
+//  Y8a.    .a88  88                88                                                                                                             
+//   `"Y88888P"   88888888888       88                                                                                                             
+                                                                                                                                                
+                                                                                                                                                
+                                                                                                                                                
+//           d8  88  88                                  88        88                                                  88                          
+//         ,8P'  88  ""               ,d                 88        88                                                  ""                          
+//        d8"    88                   88                 88        88                                                                              
+//      ,8P'     88  88  ,adPPYba,  MM88MMM  ,adPPYYba,  88        88  ,adPPYba,  88       88  ,adPPYYba,  8b,dPPYba,  88   ,adPPYba,   ,adPPYba,  
+//     d8"       88  88  I8[    ""    88     ""     `Y8  88        88  I8[    ""  88       88  ""     `Y8  88P'   "Y8  88  a8"     "8a  I8[    ""  
+//   ,8P'        88  88   `"Y8ba,     88     ,adPPPPP88  88        88   `"Y8ba,   88       88  ,adPPPPP88  88          88  8b       d8   `"Y8ba,   
+//  d8"          88  88  aa    ]8I    88,    88,    ,88  Y8a.    .a8P  aa    ]8I  "8a,   ,a88  88,    ,88  88          88  "8a,   ,a8"  aa    ]8I  
+// 8P'           88  88  `"YbbdP"'    "Y888  `"8bbdP"Y8   `"Y8888Y"'   `"YbbdP"'   `"YbbdP'Y8  `"8bbdP"Y8  88          88   `"YbbdP"'   `"YbbdP"'  
+
+//      .only
+//      .skip
+describe.skip('Endpoint GET /listaUsuarios, lee los usuarios registrados en el sistema, si se recibe "R" en quienes trae solo los que se relacionan conmigo', () => {
+
+    //.only
+    //.skip
+    it('Default', async () => {
+
+        // Registramos el usuario a "Seguir"
+        let {email, DB_usuario, ResponseJSON} = await registerAndLogin();
+        const usuario_1_RelacionId = DB_usuario._id.toString();
+
+        // Registramos el usuario que "Seguirá"
+        ({email, DB_usuario, ResponseJSON} = await registerAndLogin());
+        const usuarioId = DB_usuario._id.toString();
+
+        // Creamos la relación entre los 2 últimos usuarios creados
+        let Headers = {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer${ResponseJSON.token}`
+        }
+        let Body = {};
+        
+        ResponseText = await POST(`${__URL__}/altaRelacion?id=${usuario_1_RelacionId}`, Headers, Body);
+        
+        // Registramos un tercer usuario que no se relacionará
+        ({email, DB_usuario, ResponseJSON} = await registerAndLogin());
+        const usuario_2_RelacionId = DB_usuario._id.toString();
+        
+        
+        // Probamos el endpoint /listaUsuarios para 'new'
+        let search = "Pablo";
+        let type = "new";
+        let page = 1;
+        ResponseText = await GET(`${__URL__}/listaUsuarios?search=${search}&type=${type}&page=${page}`, Headers, Body);
+        ResponseJSON = JSON.parse(ResponseText);
+        // Verificando directamente en la base de datos
+        let DB_listaUsuarios = await getListaUsuarios(usuarioId, search, type, page);
+        // Confirmando respuesta
+        expect(ResponseJSON.length).toBeGreaterThanOrEqual(DB_listaUsuarios.length);
+        expect(ResponseJSON[0]._id).toBe(DB_listaUsuarios[0]._id.toString());
+        
+        // cl(ResponseJSON);
+        // cl(DB_listaUsuarios);
+        
+        // Probamos el endpoint /listaUsuarios para 'follow'
+        search = "Pablo";
+        type = "follow";
+        page = 1;
+        ResponseText = await GET(`${__URL__}/listaUsuarios?search=${search}&type=${type}&page=${page}`, Headers, Body);
+        ResponseJSON = JSON.parse(ResponseText);
+        // Verificando directamente en la base de datos
+        DB_listaUsuarios = await getListaUsuarios(usuarioId, search, type, page);
+        // Confirmando respuesta
+        expect(ResponseJSON.length).toBeGreaterThanOrEqual(DB_listaUsuarios.length);
+        expect(ResponseJSON[0]._id).toBe(DB_listaUsuarios[0]._id.toString());
+        
+        // cl(ResponseJSON);
+        // cl(DB_listaUsuarios);
+
+    });
+    
+});
+
+
 
 
 

@@ -554,7 +554,7 @@ Content-Type: application/json
 #  d8"       88,    ,88  88    88,    88,    ,88  88     `8b  "8b,   ,aa  88  88,    ,88  "8a,   ,aa  88  "8a,   ,a8"  88       88  
 # 8P'        `"8bbdP"Y8  88    "Y888  `"8bbdP"Y8  88      `8b  `"Ybbd8"'  88  `"8bbdP"Y8   `"Ybbd8"'  88   `"YbbdP"'   88       88  
 
-### Crea la relecion "Seguir" de un usuario con otro
+### Crea la relacion "Seguir" de un usuario con otro
 # @name Crear_Relacion
 POST {{__URL__}}/altaRelacion?id={{userToFollowID}}
 Content-Type: application/json
@@ -637,6 +637,86 @@ Authorization: Bearer{{token}}
 ### Realiza el borrado de la relacion entre usuarios
 # @name Eliminar_Relacion
 DELETE {{__URL__}}/bajaRelacion?id={{userToFollowID}}
+Content-Type: application/json
+Authorization: Bearer{{token}}
+
+###
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+@__TIME__ = {{$timestamp}}
+@userToFollowID_Temp = 602d7456c5053e{{__TIME__}}
+
+### Registro de varios usuarios a seguir
+# @name Registrar_OTRO_Usuario
+POST {{__URL__}}/registro
+Content-Type: application/json
+
+{
+	"_id": "{{userToFollowID_Temp}}",
+	"email": "{{__TIME__}}@gmail.com",
+	"password": "TeAmoDiosymar{{__TIME__}}",
+	"nombre": "Natanael {{__TIME__}}",
+	"apellidos": "Liscano {{__TIME__}}",
+	"fechaNacimiento": "1989-03-23T05:00:00Z"
+}
+
+###
+
+@userToFollowID_Last = {{Registrar_OTRO_Usuario.request.body._id}}
+
+### Crea la relecion "Seguir" del usuario registrado con el último registrado de ID = userToFollowID_Last
+# @name Crear_Relacion_con_OTRO_Usuario
+POST {{__URL__}}/altaRelacion?id={{userToFollowID_Last}}
+Content-Type: application/json
+Authorization: Bearer{{token}}
+
+###
+
+
+
+#   ,ad8888ba,   88888888888  888888888888                                                                                                        
+#  d8"'    `"8b  88                88                                                                                                             
+# d8'            88                88                                                                                                             
+# 88             88aaaaa           88                                                                                                             
+# 88      88888  88"""""           88                                                                                                             
+# Y8,        88  88                88                                                                                                             
+#  Y8a.    .a88  88                88                                                                                                             
+#   `"Y88888P"   88888888888       88                                                                                                             
+                                                                                                                                                
+                                                                                                                                                
+                                                                                                                                                
+#           d8  88  88                                  88        88                                                  88                          
+#         ,8P'  88  ""               ,d                 88        88                                                  ""                          
+#        d8"    88                   88                 88        88                                                                              
+#      ,8P'     88  88  ,adPPYba,  MM88MMM  ,adPPYYba,  88        88  ,adPPYba,  88       88  ,adPPYYba,  8b,dPPYba,  88   ,adPPYba,   ,adPPYba,  
+#     d8"       88  88  I8[    ""    88     ""     `Y8  88        88  I8[    ""  88       88  ""     `Y8  88P'   "Y8  88  a8"     "8a  I8[    ""  
+#   ,8P'        88  88   `"Y8ba,     88     ,adPPPPP88  88        88   `"Y8ba,   88       88  ,adPPPPP88  88          88  8b       d8   `"Y8ba,   
+#  d8"          88  88  aa    ]8I    88,    88,    ,88  Y8a.    .a8P  aa    ]8I  "8a,   ,a88  88,    ,88  88          88  "8a,   ,a8"  aa    ]8I  
+# 8P'           88  88  `"YbbdP"'    "Y888  `"8bbdP"Y8   `"Y8888Y"'   `"YbbdP"'   `"YbbdP'Y8  `"8bbdP"Y8  88          88   `"YbbdP"'   `"YbbdP"'  
+
+@search = Natanael
+@type = follow
+@type = new
+
+### Lee los usuarios registrados en el sistema, si se recibe "R" en quienes trae solo los que se relacionan conmigo
+# @name Lista_Usuarios
+GET {{__URL__}}/listaUsuarios?search={{search}}&type={{type}}&page=1
 Content-Type: application/json
 Authorization: Bearer{{token}}
 
