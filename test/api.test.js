@@ -140,19 +140,19 @@ describe('Endpoint POST /registro, registro de usuario', () => {
     it('Default', async () => {
 
         // Enviando peticion 
-        Headers = {
+        const Headers = {
             'Content-Type': 'application/json'
         }
         const date = parseInt(Date.now());
         const email = `pablot${date}@registro.com`;
-        Body = {
+        const Body = {
             "email": email,
             "password": "123456",
             "nombre": `Pablo ${date}`,
             "apellidos": `Tilotta ${date}`,
             "fechaNacimiento": "1970-06-30T00:00:00Z"
         }
-        ResponseText = await POST(`${__URL__}/registro`, Headers, Body);
+        let ResponseText = await POST(`${__URL__}/registro`, Headers, Body);
 
         // Verificando que el registro se haya realizado en la base de datos
         const DB_usuario = await (await db()).collection('usuarios').findOne({email: email});
@@ -197,17 +197,17 @@ async function registerAndLogin() {
     const password = `123456_${date}`;
 
     // Registrando/guardando el usuario en MongoDB
-    Headers = {
+    const Headers = {
         'Content-Type': 'application/json'
     }
-    Body = {
+    let Body = {
         "email": email,
         "password": password,
         "nombre": `Pablo ${date}`,
         "apellidos": `Tilotta ${date}`,
         "fechaNacimiento": "1970-06-30T00:00:00Z"
     }
-    ResponseText = await POST(`${__URL__}/registro`, Headers, Body);
+    let ResponseText = await POST(`${__URL__}/registro`, Headers, Body);
 
     // Verificando que el registro se haya realizado en la base de datos
     const DB_usuario = await (await db()).collection('usuarios').findOne({email: email});
@@ -219,7 +219,7 @@ async function registerAndLogin() {
         password
     }
     ResponseText = await POST(`${__URL__}/login`, Headers, Body);
-    ResponseJSON = JSON.parse(ResponseText);
+    const ResponseJSON = JSON.parse(ResponseText);
 
     // Chequeando respuesta
     // expect(ResponseJSON.token).toBeDefined();
@@ -262,18 +262,18 @@ describe('Endpoint POST /login, login', () => {
     //.skip
     it("Respuesta para usuario no resgistrado", async () => {
         
-        Headers = {
+        const Headers = {
             'Content-Type': 'application/json'
         }
 
         const __NO_EXIST__ = 'no@existo.tld';
 
-        Body = {
+        const Body = {
             email: __NO_EXIST__,
             password: '123'
         }
 
-        ResponseText = await POST(`${__URL__}/login`, Headers, Body);
+        const ResponseText = await POST(`${__URL__}/login`, Headers, Body);
         
         expect(ResponseText).toContain("Usuario y/o Contraseña inválidos");
 
@@ -291,17 +291,17 @@ describe('Endpoint POST /login, login', () => {
         const password = `contraseña_correcta`;
         
         // Registrando/guardando el usuario en MongoDB
-        Headers = {
+        const Headers = {
             'Content-Type': 'application/json'
         }
-        Body = {
+        let Body = {
             "email": email,
             "password": password,
             "nombre": `Pablo ${date}`,
             "apellidos": `Tilotta ${date}`,
             "fechaNacimiento": "1970-06-30T00:00:00Z"
         }
-        ResponseText = await POST(`${__URL__}/registro`, Headers, Body);
+        let ResponseText = await POST(`${__URL__}/registro`, Headers, Body);
 
         // Verificando que el registro se haya realizado en la base de datos
         const DB_usuario = await (await db()).collection('usuarios').findOne({email: email});
@@ -381,13 +381,13 @@ describe('Endpoint GET /verPerfil, perfil del usuario luego de haberse logueado'
         let {email, DB_usuario, ResponseJSON} = await registerAndLogin();
         
         // Realizando petición con el token obtenido
-        Headers = {
+        const Headers = {
             'Content-Type': 'application/json',
             'Authorization': `Bearer${ResponseJSON.token}`
         }
         
         // Si no se esta enviando el ID del usuario
-        ResponseText = await GET(`${__URL__}/verPerfil`, Headers);
+        let ResponseText = await GET(`${__URL__}/verPerfil`, Headers);
         
         // la respuesta deberia ser:
         expect(ResponseText).toContain('Debe enviar el parámetro ID');
@@ -453,7 +453,7 @@ describe('Endpoint PUT /modificarPerfil, modificando el perfil del usuario', () 
         let {email, DB_usuario, ResponseJSON} = await registerAndLogin();
         
         // Realizando petición con el token obtenido
-        Headers = {
+        const Headers = {
             'Content-Type': 'application/json',
             'Authorization': `Bearer${ResponseJSON.token}`
         }
@@ -462,13 +462,13 @@ describe('Endpoint PUT /modificarPerfil, modificando el perfil del usuario', () 
         const biografia = "Profesional de los BITs, Analista Funcional SR, Programador experto desde hace mas de 31 años. Instructor de UDEMY y apasionado de la informática. #UDEMY";
         const sitioWeb = "https://www.pablotilotta.com";
 
-        Body = {
+        const Body = {
             ubicacion,
             biografia,
             sitioWeb
         }
 
-        ResponseText = await PUT(`${__URL__}/modificarPerfil`, Headers, Body);
+        let ResponseText = await PUT(`${__URL__}/modificarPerfil`, Headers, Body);
 
         // Traemos la actualización de la base de datos
         const DB_usuario_update = await (await db()).collection('usuarios').findOne({email: email});
@@ -545,19 +545,19 @@ describe('Endpoint POST /tweet, insertar un Tweet', () => {
     //.skip
     it('Default', async () => {
 
-        let {email, DB_usuario, ResponseJSON} = await registerAndLogin();
+        const {email, DB_usuario, ResponseJSON} = await registerAndLogin();
 
         // Enviando peticion 
-        Headers = {
+        const Headers = {
             'Content-Type': 'application/json',
             'Authorization': `Bearer${ResponseJSON.token}`
         }
         const date = parseInt(Date.now());
         const mensaje = `Es es mi primer tweet ${date}`;
-        Body = {
+        const Body = {
             mensaje
         }
-        ResponseText = await POST(`${__URL__}/tweet`, Headers, Body);
+        const ResponseText = await POST(`${__URL__}/tweet`, Headers, Body);
 
         const DB_tweet = await (await db()).collection('tweet').findOne({mensaje: mensaje});
         
@@ -634,11 +634,11 @@ describe('Endpoint GET /tweet, leer los tweets de un usuario', () => {
         }
 
         // Enviando peticion 
-        Headers = {
+        const Headers = {
             'Content-Type': 'application/json',
         }
 
-        ResponseText = await GET(`${__URL__}/tweet?userId=${userId}&limit=${numero_tweets}&page=1`, Headers);
+        let ResponseText = await GET(`${__URL__}/tweet?userId=${userId}&limit=${numero_tweets}&page=1`, Headers);
         ResponseJSON = JSON.parse(ResponseText);
 
         expect(ResponseJSON.length).toBe(numero_tweets);
@@ -686,9 +686,11 @@ describe('Endpoint GET /tweet, leer los tweets de un usuario', () => {
         }
 
         // Enviando peticiones 
-        Headers = {
+        const Headers = {
             'Content-Type': 'application/json',
         }
+
+        let ResponseText;
 
         for (let j=1; j<=numero_tweets; j++) {
             let limit = j;
@@ -757,19 +759,19 @@ describe('Endpoint DELETE /tweet, eliminar un tweet', () => {
         // Primero creamos el Tweet a que luego se va a eliminar
 
         // Creamos el usuario y nos logueamos
-        let {email, DB_usuario, ResponseJSON} = await registerAndLogin();
+        const {email, DB_usuario, ResponseJSON} = await registerAndLogin();
 
         // Creando el tweet
-        Headers = {
+        const Headers = {
             'Content-Type': 'application/json',
             'Authorization': `Bearer${ResponseJSON.token}`
         }
         const date = parseInt(Date.now());
         const mensaje = `Es es mi primer tweet ${date}`;
-        Body = {
+        const Body = {
             mensaje
         }
-        ResponseText = await POST(`${__URL__}/tweet`, Headers, Body);
+        let ResponseText = await POST(`${__URL__}/tweet`, Headers, Body);
 
         let DB_tweet = await (await db()).collection('tweet').findOne({mensaje: mensaje});
         
@@ -840,7 +842,7 @@ describe('Endpoint POST /avatar, subir la imagen del Avatar al servidor', () => 
         let {email, DB_usuario, ResponseJSON} = await registerAndLogin();
 
         // Llenamos la data especificando el archivo a subir y su clave=key para obtenerlo del Request
-        Data = {
+        let Data = {
             authorization: `Bearer${ResponseJSON.token}`,
             key: 'avatar',
             filePath: `${__dirname}/resources/avatars/Liscano.Natanael.PNG`
@@ -849,7 +851,7 @@ describe('Endpoint POST /avatar, subir la imagen del Avatar al servidor', () => 
         };
 
         // Realizando petición, subida de la imagen
-        ResponseText = await POST_FILE(`${__URL__}/avatar`, Data);
+        const ResponseText = await POST_FILE(`${__URL__}/avatar`, Data);
         
         // Chequeando que el archivo se haya subido y que se haya registrado en la base de datos
         DB_usuario = await (await db()).collection('usuarios').findOne({_id: DB_usuario._id});
@@ -857,8 +859,8 @@ describe('Endpoint POST /avatar, subir la imagen del Avatar al servidor', () => 
         expect(file_match).toContain(DB_usuario.avatar);
 
         // Chequeando que el MD5 del archivo original coincida con el subido al servidor
-        MD5_original = await (await exec(`md5sum "${Data.filePath}" | awk '{ print \$1 }'`)).stdout;
-        MD5_uploaded = await (await exec(`md5sum "${__DIR_APP__}/uploads/avatars/${DB_usuario.avatar}" | awk '{ print \$1 }'`)).stdout;
+        const MD5_original = await (await exec(`md5sum "${Data.filePath}" | awk '{ print \$1 }'`)).stdout;
+        const MD5_uploaded = await (await exec(`md5sum "${__DIR_APP__}/uploads/avatars/${DB_usuario.avatar}" | awk '{ print \$1 }'`)).stdout;
         expect(MD5_uploaded).toBe(MD5_original);
 
     });
@@ -906,10 +908,10 @@ describe('Endpoint GET /avatar, obtiene el archivo/recurso imagen del Avatar por
     it('Default', async () => {
 
         // Creamos el usuario y nos logueamos
-        let {email, DB_usuario, ResponseJSON} = await registerAndLogin();
+        const {email, DB_usuario, ResponseJSON} = await registerAndLogin();
 
         // Llenamos la data especificando el archivo a subir y su clave=key para obtenerlo del Request
-        Data = {
+        let Data = {
             authorization: `Bearer${ResponseJSON.token}`,
             key: 'avatar',
             filePath: `${__dirname}/resources/avatars/Liscano.Natanael.PNG`
@@ -918,14 +920,14 @@ describe('Endpoint GET /avatar, obtiene el archivo/recurso imagen del Avatar por
         };
 
         // Realizamos la petición, subida de la imagen
-        ResponseText = await POST_FILE(`${__URL__}/avatar`, Data);
+        const ResponseText = await POST_FILE(`${__URL__}/avatar`, Data);
 
         // Obteniendo el archivo previamente subido
-        let { Response, File } = await GET_FILE(`${__URL__}/avatar?userId=${DB_usuario._id.toString()}`, null);
+        const { Response, File } = await GET_FILE(`${__URL__}/avatar?userId=${DB_usuario._id.toString()}`, null);
 
         // Chequeando MD5
-        MD5_original = await (await exec(`md5sum "${Data.filePath}" | awk '{ print \$1 }'`)).stdout;
-        MD5_downloaded = await (await exec(`md5sum "${File}" | awk '{ print \$1 }'`)).stdout;
+        let MD5_original = await (await exec(`md5sum "${Data.filePath}" | awk '{ print \$1 }'`)).stdout;
+        let MD5_downloaded = await (await exec(`md5sum "${File}" | awk '{ print \$1 }'`)).stdout;
         expect(MD5_downloaded).toBe(MD5_original);
 
         // Chequeando funcionamiento del MD5 en su no coincidencia!
@@ -987,7 +989,7 @@ describe('Endpoint POST /banner, subir la imagen del Banner al servidor', () => 
         let {email, DB_usuario, ResponseJSON} = await registerAndLogin();
 
         // Llenamos la data especificando el archivo a subir y su clave=key para obtenerlo del Request
-        Data = {
+        const Data = {
             authorization: `Bearer${ResponseJSON.token}`,
             key: 'banner',
             filePath: `${__dirname}/resources/banners/web-designer`
@@ -996,7 +998,7 @@ describe('Endpoint POST /banner, subir la imagen del Banner al servidor', () => 
         };
 
         // Realizando petición, subida de la imagen
-        ResponseText = await POST_FILE(`${__URL__}/banner`, Data);
+        const ResponseText = await POST_FILE(`${__URL__}/banner`, Data);
         
         // Chequeando que el archivo se haya subido y que se haya registrado en la base de datos
         DB_usuario = await (await db()).collection('usuarios').findOne({_id: DB_usuario._id});
@@ -1004,8 +1006,8 @@ describe('Endpoint POST /banner, subir la imagen del Banner al servidor', () => 
         expect(file_match).toContain(DB_usuario.banner);
 
         // Chequeando que el MD5 del archivo original coincida con el subido al servidor
-        MD5_original = await (await exec(`md5sum "${Data.filePath}" | awk '{ print \$1 }'`)).stdout;
-        MD5_uploaded = await (await exec(`md5sum "${__DIR_APP__}/uploads/banners/${DB_usuario.banner}" | awk '{ print \$1 }'`)).stdout;
+        const MD5_original = await (await exec(`md5sum "${Data.filePath}" | awk '{ print \$1 }'`)).stdout;
+        const MD5_uploaded = await (await exec(`md5sum "${__DIR_APP__}/uploads/banners/${DB_usuario.banner}" | awk '{ print \$1 }'`)).stdout;
         expect(MD5_uploaded).toBe(MD5_original);
 
     });
@@ -1057,10 +1059,10 @@ describe('Endpoint GET /banner, obtiene el archivo/recurso imagen del Banner por
     it('Default', async () => {
 
         // Creamos el usuario y nos logueamos
-        let {email, DB_usuario, ResponseJSON} = await registerAndLogin();
+        const {email, DB_usuario, ResponseJSON} = await registerAndLogin();
 
         // Llenamos la data especificando el archivo a subir y su clave=key para obtenerlo del Request
-        Data = {
+        let Data = {
             authorization: `Bearer${ResponseJSON.token}`,
             key: 'banner',
             filePath: `${__dirname}/resources/banners/web-designer`
@@ -1069,14 +1071,14 @@ describe('Endpoint GET /banner, obtiene el archivo/recurso imagen del Banner por
         };
 
         // Realizamos la petición, subida de la imagen
-        ResponseText = await POST_FILE(`${__URL__}/banner`, Data);
+        const ResponseText = await POST_FILE(`${__URL__}/banner`, Data);
 
         // Obteniendo el archivo previamente subido
-        let { Response, File } = await GET_FILE(`${__URL__}/banner?userId=${DB_usuario._id.toString()}`, null);
+        const { Response, File } = await GET_FILE(`${__URL__}/banner?userId=${DB_usuario._id.toString()}`, null);
 
         // Chequeando MD5
-        MD5_original = await (await exec(`md5sum "${Data.filePath}" | awk '{ print \$1 }'`)).stdout;
-        MD5_downloaded = await (await exec(`md5sum "${File}" | awk '{ print \$1 }'`)).stdout;
+        let MD5_original = await (await exec(`md5sum "${Data.filePath}" | awk '{ print \$1 }'`)).stdout;
+        let MD5_downloaded = await (await exec(`md5sum "${File}" | awk '{ print \$1 }'`)).stdout;
         expect(MD5_downloaded).toBe(MD5_original);
 
         // Chequeando funcionamiento del MD5 en su no coincidencia!
@@ -1146,13 +1148,13 @@ describe('Endpoint POST /relacion, crea la relecion "Seguir" de un usuario con o
         const userId = DB_usuario._id.toString();
 
         // Enviando peticion
-        Headers = {
+        const Headers = {
             'Content-Type': 'application/json',
             'Authorization': `Bearer${ResponseJSON.token}`
         }
-        Body = {};
+        const Body = {};
 
-        ResponseText = await POST(`${__URL__}/relacion?userRelacionId=${userRelacionId}`, Headers, Body);
+        let ResponseText = await POST(`${__URL__}/relacion?userRelacionId=${userRelacionId}`, Headers, Body);
         
         // Verificando que se haya registrado en la base de datos
         const DB_relacion = await (await db()).collection('relacion').findOne({
@@ -1224,12 +1226,12 @@ describe('Endpoint DELETE /relacion, realiza el borrado de la relacion entre usu
         const userId = DB_usuario._id.toString();
 
         // Creamos una relacion
-        Headers = {
+        const Headers = {
             'Content-Type': 'application/json',
             'Authorization': `Bearer${ResponseJSON.token}`
         }
-        Body = {};
-        ResponseText = await POST(`${__URL__}/relacion?userRelacionId=${userRelacionId}`, Headers, Body);
+        const Body = {};
+        let ResponseText = await POST(`${__URL__}/relacion?userRelacionId=${userRelacionId}`, Headers, Body);
 
         // Verificando que se haya registrado en la base de datos
         let DB_relacion = await (await db()).collection('relacion').findOne({
@@ -1304,13 +1306,13 @@ describe('Endpoint GET /relacion, chequea si hay relacion entre 2 usuarios', () 
         const userId = DB_usuario._id.toString();
 
         // Enviando peticion
-        Headers = {
+        const Headers = {
             'Content-Type': 'application/json',
             'Authorization': `Bearer${ResponseJSON.token}`
         }
-        Body = {};
+        const Body = {};
 
-        ResponseText = await POST(`${__URL__}/relacion?userRelacionId=${userRelacionId}`, Headers, Body);
+        let ResponseText = await POST(`${__URL__}/relacion?userRelacionId=${userRelacionId}`, Headers, Body);
         
         // Verificando que se haya registrado en la base de datos
         const DB_relacion = await (await db()).collection('relacion').findOne({
@@ -1341,6 +1343,136 @@ describe('Endpoint GET /relacion, chequea si hay relacion entre 2 usuarios', () 
     });
 
 });
+
+
+
+
+
+
+
+
+
+
+
+
+async function getListaUsuarios(__USUARIO_ID__, __SEARCH__, __TYPE__, __LIMIT__,__PAGE__) {
+
+    const __OPERATOR__ = {
+        'new': '$ne',
+        'follow': '$eq',
+    }
+
+    const DB_cursor = await (await db()).collection('usuarios').aggregate([
+        {$match: {$and: [
+            {nombre: {$regex: '(?i)'+__SEARCH__}},
+            {_id: {$ne: ObjectId(__USUARIO_ID__)}},
+        ]}},
+        {$lookup:{
+            from: 'relacion',
+            let: {local_id: '$_id'},
+            pipeline: [
+                {$match:{$expr: {$eq: ['$_userRelacionId', '$$local_id']}}}, 
+                {$project: {_userId: 1, _id: 0}},
+            ],
+            as: 'relaciones',
+        }},
+        {$match: {'relaciones._userId': {[__OPERATOR__[__TYPE__]]: ObjectId(__USUARIO_ID__)}}},
+        {$project: {relaciones: 0}},
+        {$sort: {nombre: 1}},
+        {$skip: (__PAGE__-1)*__LIMIT__},
+        {$limit: __LIMIT__},
+    ]);
+ 
+    return await DB_cursor.toArray();
+}
+
+//   ,ad8888ba,   88888888888  888888888888                                                                                                        
+//  d8"'    `"8b  88                88                                                                                                             
+// d8'            88                88                                                                                                             
+// 88             88aaaaa           88                                                                                                             
+// 88      88888  88"""""           88                                                                                                             
+// Y8,        88  88                88                                                                                                             
+//  Y8a.    .a88  88                88                                                                                                             
+//   `"Y88888P"   88888888888       88                                                                                                             
+                                                                                                                                                
+                                                                                                                                                
+                                                                                                                                                
+//           d8  88  88                                  88        88                                                  88                          
+//         ,8P'  88  ""               ,d                 88        88                                                  ""                          
+//        d8"    88                   88                 88        88                                                                              
+//      ,8P'     88  88  ,adPPYba,  MM88MMM  ,adPPYYba,  88        88  ,adPPYba,  88       88  ,adPPYYba,  8b,dPPYba,  88   ,adPPYba,   ,adPPYba,  
+//     d8"       88  88  I8[    ""    88     ""     `Y8  88        88  I8[    ""  88       88  ""     `Y8  88P'   "Y8  88  a8"     "8a  I8[    ""  
+//   ,8P'        88  88   `"Y8ba,     88     ,adPPPPP88  88        88   `"Y8ba,   88       88  ,adPPPPP88  88          88  8b       d8   `"Y8ba,   
+//  d8"          88  88  aa    ]8I    88,    88,    ,88  Y8a.    .a8P  aa    ]8I  "8a,   ,a88  88,    ,88  88          88  "8a,   ,a8"  aa    ]8I  
+// 8P'           88  88  `"YbbdP"'    "Y888  `"8bbdP"Y8   `"Y8888Y"'   `"YbbdP"'   `"YbbdP'Y8  `"8bbdP"Y8  88          88   `"YbbdP"'   `"YbbdP"'  
+
+//      .only
+//      .skip
+describe.only('Endpoint GET /listaUsuarios, Retorna la lista de usuarios que se estan(follow)/o nó (new) siguiendo por el usuario', () => {
+
+    //.only
+    //.skip
+    it('Default', async () => {
+
+        // Registramos el usuario a "Seguir"
+        let {email, DB_usuario, ResponseJSON} = await registerAndLogin();
+        const user_1_RelacionId = DB_usuario._id.toString();
+
+        // Registramos el usuario que "Seguirá"
+        ({email, DB_usuario, ResponseJSON} = await registerAndLogin());
+        const userId = DB_usuario._id.toString();
+
+        // Creamos la relación entre los 2 últimos usuarios creados
+        const Headers = {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer${ResponseJSON.token}`
+        }
+        const Body = {};
+
+        let ResponseText = await POST(`${__URL__}/relacion?userRelacionId=${user_1_RelacionId}`, Headers, Body);
+        
+        // Registramos un tercer usuario que no se relacionará
+        ({email, DB_usuario, ResponseJSON} = await registerAndLogin());
+        const usuario_2_RelacionId = DB_usuario._id.toString();
+        
+        
+        // Probamos el endpoint /listaUsuarios para 'new'
+        let search = "Pablo";
+        let type = "new";
+        let limit = 18;
+        let page = 1;
+        ResponseText = await GET(`${__URL__}/listaUsuarios?search=${search}&type=${type}&limit=${limit}&page=${page}`, Headers, Body);
+        ResponseJSON = JSON.parse(ResponseText);
+        // Verificando directamente en la base de datos
+        let DB_listaUsuarios = await getListaUsuarios(userId, search, type, limit, page);
+        // Confirmando respuesta
+        expect(ResponseJSON.length).toBe(DB_listaUsuarios.length);
+        expect(ResponseJSON[0]._id).toBe(DB_listaUsuarios[0]._id.toString());
+        
+        // cl(ResponseJSON);
+        // cl(DB_listaUsuarios);
+        
+        // Probamos el endpoint /listaUsuarios para 'follow'
+        search = "Pablo";
+        type = "follow";
+        limit = 18;
+        page = 1;
+        ResponseText = await GET(`${__URL__}/listaUsuarios?search=${search}&type=${type}&limit=${limit}&page=${page}`, Headers, Body);
+        ResponseJSON = JSON.parse(ResponseText);
+        // Verificando directamente en la base de datos
+        DB_listaUsuarios = await getListaUsuarios(userId, search, type, limit, page);
+        // Confirmando respuesta
+        expect(ResponseJSON.length).toBe(DB_listaUsuarios.length);
+        expect(ResponseJSON[0]._id).toBe(DB_listaUsuarios[0]._id.toString());
+        
+        // cl(ResponseJSON);
+        // cl(DB_listaUsuarios);
+
+    });
+    
+});
+
+
 
 
 
