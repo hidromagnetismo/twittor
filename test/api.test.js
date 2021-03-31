@@ -78,7 +78,7 @@ const secret = 'MastersDelDesarrollo_grupoDeFacebook'; // jwt/jwt.go
                                                     
 // 888888888888                          888888888888  
 
-__DB__ = 'mongodb+srv://root:XWBXgUne3U2OmMax@cluster0.lji8t.mongodb.net/twittor?retryWrites=true&w=majority';
+__DB__ = 'mongodb+srv://root:XDwJ2WgmXeLYCzUw@cluster0.lji8t.mongodb.net/twittor?retryWrites=true&w=majority';
 __DB__ = 'mongodb://root:123456@localhost:27017';
 
 
