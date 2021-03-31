@@ -53,6 +53,7 @@ const { ObjectId } = require('mongodb');
 
 
 const jwt = require('jsonwebtoken');
+const { URLSearchParams } = require('url');
 var path = require("path");
 var __DIR_APP__ = path.resolve(".");
 // const config = require('../src/config');
@@ -710,6 +711,7 @@ describe('Endpoint GET /tweet, leer los tweets de un usuario', () => {
                 }
 
             }
+
             console.log(`${leftExpresion} = ${numero_tweets}`);
         }
         
@@ -1408,7 +1410,7 @@ async function getListaUsuarios(__USUARIO_ID__, __SEARCH__, __TYPE__, __LIMIT__,
 
 //      .only
 //      .skip
-describe.only('Endpoint GET /listaUsuarios, Retorna la lista de usuarios que se estan(follow)/o nó (new) siguiendo por el usuario', () => {
+describe('Endpoint GET /listaUsuarios, Retorna la lista de usuarios que se estan(follow)/o nó (new) siguiendo por el usuario', () => {
 
     //.only
     //.skip
@@ -1416,7 +1418,7 @@ describe.only('Endpoint GET /listaUsuarios, Retorna la lista de usuarios que se 
 
         // Registramos el usuario a "Seguir"
         let {email, DB_usuario, ResponseJSON} = await registerAndLogin();
-        const user_1_RelacionId = DB_usuario._id.toString();
+        const user_1_relacionId = DB_usuario._id.toString();
 
         // Registramos el usuario que "Seguirá"
         ({email, DB_usuario, ResponseJSON} = await registerAndLogin());
@@ -1429,19 +1431,20 @@ describe.only('Endpoint GET /listaUsuarios, Retorna la lista de usuarios que se 
         }
         const Body = {};
 
-        let ResponseText = await POST(`${__URL__}/relacion?userRelacionId=${user_1_RelacionId}`, Headers, Body);
+        let ResponseText = await POST(`${__URL__}/relacion?userRelacionId=${user_1_relacionId}`, Headers, Body);
         
         // Registramos un tercer usuario que no se relacionará
         ({email, DB_usuario, ResponseJSON} = await registerAndLogin());
-        const usuario_2_RelacionId = DB_usuario._id.toString();
+        const user_2_relacionId = DB_usuario._id.toString();
         
         
         // Probamos el endpoint /listaUsuarios para 'new'
-        let search = "Pablo";
+        let search = "pablo";
         let type = "new";
         let limit = 18;
         let page = 1;
-        ResponseText = await GET(`${__URL__}/listaUsuarios?search=${search}&type=${type}&limit=${limit}&page=${page}`, Headers, Body);
+        let searchQueryParam = (new URLSearchParams([['search',search]])).toString();
+        ResponseText = await GET(`${__URL__}/listaUsuarios?${searchQueryParam}&type=${type}&limit=${limit}&page=${page}`, Headers, Body);
         ResponseJSON = JSON.parse(ResponseText);
         // Verificando directamente en la base de datos
         let DB_listaUsuarios = await getListaUsuarios(userId, search, type, limit, page);
@@ -1453,11 +1456,12 @@ describe.only('Endpoint GET /listaUsuarios, Retorna la lista de usuarios que se 
         // cl(DB_listaUsuarios);
         
         // Probamos el endpoint /listaUsuarios para 'follow'
-        search = "Pablo";
+        search = "pablo";
         type = "follow";
         limit = 18;
         page = 1;
-        ResponseText = await GET(`${__URL__}/listaUsuarios?search=${search}&type=${type}&limit=${limit}&page=${page}`, Headers, Body);
+        searchQueryParam = (new URLSearchParams([['search',search]])).toString();
+        ResponseText = await GET(`${__URL__}/listaUsuarios?${searchQueryParam}&type=${type}&limit=${limit}&page=${page}`, Headers, Body);
         ResponseJSON = JSON.parse(ResponseText);
         // Verificando directamente en la base de datos
         DB_listaUsuarios = await getListaUsuarios(userId, search, type, limit, page);
@@ -1477,6 +1481,184 @@ describe.only('Endpoint GET /listaUsuarios, Retorna la lista de usuarios que se 
 
 
 
+
+
+
+
+
+
+
+
+
+
+//   ,ad8888ba,   88888888888  888888888888                                                                                                                              
+//  d8"'    `"8b  88                88                                                                                                                                   
+// d8'            88                88                                                                                                                                   
+// 88             88aaaaa           88                                                                                                                                   
+// 88      88888  88"""""           88                                                                                                                                   
+// Y8,        88  88                88                                                                                                                                   
+//  Y8a.    .a88  88                88                                                                                                                                   
+//   `"Y88888P"   88888888888       88                                                                                                                                   
+                                                                                                                                                                      
+                                                                                                                                                                      
+                                                                                                                                                                      
+//           d8                                                               ad88888ba                                         88           88                          
+//         ,8P'  ,d                                                   ,d     d8"     "8b                                        ""           88                          
+//        d8"    88                                                   88     Y8,                                                             88                          
+//      ,8P'   MM88MMM  8b      db      d8   ,adPPYba,   ,adPPYba,  MM88MMM  `Y8aaaaa,     ,adPPYba,   ,adPPYb,d8  88       88  88   ,adPPYb,88   ,adPPYba,   ,adPPYba,  
+//     d8"       88     `8b    d88b    d8'  a8P_____88  a8P_____88    88       `"""""8b,  a8P_____88  a8"    `Y88  88       88  88  a8"    `Y88  a8"     "8a  I8[    ""  
+//   ,8P'        88      `8b  d8'`8b  d8'   8PP"""""""  8PP"""""""    88             `8b  8PP"""""""  8b       88  88       88  88  8b       88  8b       d8   `"Y8ba,   
+//  d8"          88,      `8bd8'  `8bd8'    "8b,   ,aa  "8b,   ,aa    88,    Y8a     a8P  "8b,   ,aa  "8a,   ,d88  "8a,   ,a88  88  "8a,   ,d88  "8a,   ,a8"  aa    ]8I  
+// 8P'           "Y888      YP      YP       `"Ybbd8"'   `"Ybbd8"'    "Y888   "Y88888P"    `"Ybbd8"'   `"YbbdP"Y8   `"YbbdP'Y8  88   `"8bbdP"Y8   `"YbbdP"'   `"YbbdP"'  
+//                                                                                                     aa,    ,88                                                        
+//                                                                                                      "Y8bbdP"                                                         
+
+//      .only
+//      .skip
+describe('Endpoint GET /tweetSeguidos, Lee los tweets de todos los que seguimos', () => {
+
+    //.only
+    //.skip
+    it('Default', async () => {
+
+
+
+        // Registramos el primer usuario a "Seguir"
+        let {email, DB_usuario, ResponseJSON} = await registerAndLogin();
+        const user_1_relacionId = DB_usuario._id.toString();
+
+        // Dicho usuario envía un tweet 
+        const Headers_user_1 = {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer${ResponseJSON.token}`
+        }
+        let date = parseInt(Date.now());
+        let mensaje = `Soy el primer usuario, este es mi primer tweet ${date}`;
+        let Body = {
+            mensaje
+        }
+        let ResponseText = await POST(`${__URL__}/tweet`, Headers_user_1, Body);
+
+
+
+        // Registramos el segundo usuario a "Seguir"
+        ({email, DB_usuario, ResponseJSON} = await registerAndLogin());
+        const user_2_relacionId = DB_usuario._id.toString();
+
+        // Este usuario no relacionado tambien envía un tweet 
+        Headers = {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer${ResponseJSON.token}`
+        }
+        date = parseInt(Date.now());
+        mensaje = `Soy el segundo usuario, este es mi primer tweet ${date}`;
+        Body = {
+            mensaje
+        }
+        ResponseText = await POST(`${__URL__}/tweet`, Headers, Body);
+
+
+
+        // Registramos el usuario que "Seguirá" a estos dos últimos usuarios
+        ({email, DB_usuario, ResponseJSON} = await registerAndLogin());
+        const userId = DB_usuario._id.toString();
+
+        // El usuario que seguirá tambien envía un tweet 
+        const Headers_seguidor = {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer${ResponseJSON.token}`
+        }
+        date = parseInt(Date.now());
+        mensaje = `Soy el tercer usuario principal/seguidor y este es mi primer tweet ${date}`;
+        Body = {
+            mensaje
+        }
+        ResponseText = await POST(`${__URL__}/tweet`, Headers_seguidor, Body);
+
+
+
+        // Creamos la relación entre los 2 últimos usuarios creados
+        Body = {};
+        
+        ResponseText = await POST(`${__URL__}/relacion?userRelacionId=${user_1_relacionId}`, Headers_seguidor, Body);
+        ResponseText = await POST(`${__URL__}/relacion?userRelacionId=${user_2_relacionId}`, Headers_seguidor, Body);
+
+
+
+        // Registramos un cuarto usuario que seguirá al tercero
+        ({email, DB_usuario, ResponseJSON} = await registerAndLogin());
+        const user_3_id = DB_usuario._id.toString();
+
+        // Este usuario tambien envía un tweet 
+        Headers = {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer${ResponseJSON.token}`
+        }
+        date = parseInt(Date.now());
+        mensaje = `Soy el cuarto usuario no relacionado con el tercero y este es mi primer tweet ${date}`;
+        Body = {
+            mensaje
+        }
+        ResponseText = await POST(`${__URL__}/tweet`, Headers, Body);
+        ResponseText = await POST(`${__URL__}/relacion?userRelacionId=${userId}`, Headers, Body);
+
+
+
+        // Finalmente el primer usuario envía un segundo tweet 
+        date = parseInt(Date.now());
+        mensaje = `Soy el primer usuario, este es mi segundo tweet ${date}`;
+        Body = {
+            mensaje
+        }
+        ResponseText = await POST(`${__URL__}/tweet`, Headers_user_1, Body);
+
+
+
+        // Probamos el endpoint siendo el usuario principal
+        Body = {};
+        const limit = 18;
+        const page = 1;
+        ResponseText = await GET(`${__URL__}/tweetSeguidos?limit=${limit}&page=${page}`, Headers_seguidor, Body);
+        ResponseJSON = JSON.parse(ResponseText);
+
+
+
+        // Confirmamos respuesta
+        const skip = (page - 1) * limit
+        const DB_cursor = await (await db()).collection('relacion').aggregate([
+            {$match: {_userId: ObjectId(userId)}},
+            {$lookup:{
+                from: 'tweet',
+                localField: '_userRelacionId',
+                foreignField: '_userId',
+                as: 'tweet',
+            }},
+            {$unwind: '$tweet'},
+            {$sort: {'tweet.fecha': -1}},
+            {$skip: skip},
+            {$limit: limit},
+        ]);
+        const DB_relacion = await DB_cursor.toArray();
+
+        const expectCountTweets = 3;
+
+        expect(DB_relacion.length).toBe(expectCountTweets);
+        expect(ResponseJSON.length).toBe(expectCountTweets);
+
+        ResponseJSON.forEach((relation, index) => {
+            expect(relation._id).toBe(                                  DB_relacion[index]._id.toString());
+            expect(relation._userId).toBe(                              DB_relacion[index]._userId.toString());
+            expect(relation._userRelacionId).toBe(                      DB_relacion[index]._userRelacionId.toString());
+            expect(relation.tweet._id).toBe(                            DB_relacion[index].tweet._id.toString());
+            expect(relation.tweet.mensaje).toBe(                        DB_relacion[index].tweet.mensaje);
+            expect((new Date(relation.tweet.fecha)).toString()).toBe(   DB_relacion[index].tweet.fecha.toString());
+        });
+
+
+
+    });
+
+});
 
 
 
