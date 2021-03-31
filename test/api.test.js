@@ -140,19 +140,19 @@ describe('Endpoint POST /registro, registro de usuario', () => {
     it('Default', async () => {
 
         // Enviando peticion 
-        let Headers = {
+        const Headers = {
             'Content-Type': 'application/json'
         }
         const date = parseInt(Date.now());
         const email = `pablot${date}@registro.com`;
-        let Body = {
+        const Body = {
             "email": email,
             "password": "123456",
             "nombre": `Pablo ${date}`,
             "apellidos": `Tilotta ${date}`,
             "fechaNacimiento": "1970-06-30T00:00:00Z"
         }
-        ResponseText = await POST(`${__URL__}/registro`, Headers, Body);
+        let ResponseText = await POST(`${__URL__}/registro`, Headers, Body);
 
         // Verificando que el registro se haya realizado en la base de datos
         const DB_usuario = await (await db()).collection('usuarios').findOne({email: email});
@@ -197,7 +197,7 @@ async function registerAndLogin() {
     const password = `123456_${date}`;
 
     // Registrando/guardando el usuario en MongoDB
-    let Headers = {
+    const Headers = {
         'Content-Type': 'application/json'
     }
     let Body = {
@@ -207,7 +207,7 @@ async function registerAndLogin() {
         "apellidos": `Tilotta ${date}`,
         "fechaNacimiento": "1970-06-30T00:00:00Z"
     }
-    ResponseText = await POST(`${__URL__}/registro`, Headers, Body);
+    let ResponseText = await POST(`${__URL__}/registro`, Headers, Body);
 
     // Verificando que el registro se haya realizado en la base de datos
     const DB_usuario = await (await db()).collection('usuarios').findOne({email: email});
@@ -219,7 +219,7 @@ async function registerAndLogin() {
         password
     }
     ResponseText = await POST(`${__URL__}/login`, Headers, Body);
-    ResponseJSON = JSON.parse(ResponseText);
+    const ResponseJSON = JSON.parse(ResponseText);
 
     // Chequeando respuesta
     // expect(ResponseJSON.token).toBeDefined();
@@ -262,18 +262,18 @@ describe('Endpoint POST /login, login', () => {
     //.skip
     it("Respuesta para usuario no resgistrado", async () => {
         
-        let Headers = {
+        const Headers = {
             'Content-Type': 'application/json'
         }
 
         const __NO_EXIST__ = 'no@existo.tld';
 
-        let Body = {
+        const Body = {
             email: __NO_EXIST__,
             password: '123'
         }
 
-        ResponseText = await POST(`${__URL__}/login`, Headers, Body);
+        const ResponseText = await POST(`${__URL__}/login`, Headers, Body);
         
         expect(ResponseText).toContain("Usuario y/o Contraseña inválidos");
 
@@ -291,7 +291,7 @@ describe('Endpoint POST /login, login', () => {
         const password = `contraseña_correcta`;
         
         // Registrando/guardando el usuario en MongoDB
-        let Headers = {
+        const Headers = {
             'Content-Type': 'application/json'
         }
         let Body = {
@@ -301,7 +301,7 @@ describe('Endpoint POST /login, login', () => {
             "apellidos": `Tilotta ${date}`,
             "fechaNacimiento": "1970-06-30T00:00:00Z"
         }
-        ResponseText = await POST(`${__URL__}/registro`, Headers, Body);
+        let ResponseText = await POST(`${__URL__}/registro`, Headers, Body);
 
         // Verificando que el registro se haya realizado en la base de datos
         const DB_usuario = await (await db()).collection('usuarios').findOne({email: email});
@@ -381,13 +381,13 @@ describe('Endpoint GET /verPerfil, perfil del usuario luego de haberse logueado'
         let {email, DB_usuario, ResponseJSON} = await registerAndLogin();
         
         // Realizando petición con el token obtenido
-        let Headers = {
+        const Headers = {
             'Content-Type': 'application/json',
             'Authorization': `Bearer${ResponseJSON.token}`
         }
         
         // Si no se esta enviando el ID del usuario
-        ResponseText = await GET(`${__URL__}/verPerfil`, Headers);
+        let ResponseText = await GET(`${__URL__}/verPerfil`, Headers);
         
         // la respuesta deberia ser:
         expect(ResponseText).toContain('Debe enviar el parámetro ID');
@@ -453,7 +453,7 @@ describe('Endpoint PUT /modificarPerfil, modificando el perfil del usuario', () 
         let {email, DB_usuario, ResponseJSON} = await registerAndLogin();
         
         // Realizando petición con el token obtenido
-        let Headers = {
+        const Headers = {
             'Content-Type': 'application/json',
             'Authorization': `Bearer${ResponseJSON.token}`
         }
@@ -462,13 +462,13 @@ describe('Endpoint PUT /modificarPerfil, modificando el perfil del usuario', () 
         const biografia = "Profesional de los BITs, Analista Funcional SR, Programador experto desde hace mas de 31 años. Instructor de UDEMY y apasionado de la informática. #UDEMY";
         const sitioWeb = "https://www.pablotilotta.com";
 
-        let Body = {
+        const Body = {
             ubicacion,
             biografia,
             sitioWeb
         }
 
-        ResponseText = await PUT(`${__URL__}/modificarPerfil`, Headers, Body);
+        let ResponseText = await PUT(`${__URL__}/modificarPerfil`, Headers, Body);
 
         // Traemos la actualización de la base de datos
         const DB_usuario_update = await (await db()).collection('usuarios').findOne({email: email});
@@ -545,19 +545,19 @@ describe('Endpoint POST /tweet, insertar un Tweet', () => {
     //.skip
     it('Default', async () => {
 
-        let {email, DB_usuario, ResponseJSON} = await registerAndLogin();
+        const {email, DB_usuario, ResponseJSON} = await registerAndLogin();
 
         // Enviando peticion 
-        let Headers = {
+        const Headers = {
             'Content-Type': 'application/json',
             'Authorization': `Bearer${ResponseJSON.token}`
         }
         const date = parseInt(Date.now());
         const mensaje = `Es es mi primer tweet ${date}`;
-        let Body = {
+        const Body = {
             mensaje
         }
-        ResponseText = await POST(`${__URL__}/tweet`, Headers, Body);
+        const ResponseText = await POST(`${__URL__}/tweet`, Headers, Body);
 
         const DB_tweet = await (await db()).collection('tweet').findOne({mensaje: mensaje});
         
@@ -634,12 +634,12 @@ describe('Endpoint GET /leoTweets, leer los tweets de un usuario', () => {
         }
 
         // Enviando peticion 
-        let Headers = {
+        const Headers = {
             'Content-Type': 'application/json',
             'Authorization': `Bearer${ResponseJSON.token}`
         }
 
-        ResponseText = await GET(`${__URL__}/leoTweets?id=${userId}&pagina=1`, Headers);
+        let ResponseText = await GET(`${__URL__}/leoTweets?id=${userId}&pagina=1`, Headers);
         ResponseJSON = JSON.parse(ResponseText);
 
         expect(ResponseJSON.length).toBe(numero_tweets);
@@ -687,12 +687,13 @@ describe('Endpoint GET /leoTweets, leer los tweets de un usuario', () => {
         }
 
         // Enviando peticiones 
-        let Headers = {
+        const Headers = {
             'Content-Type': 'application/json',
             'Authorization': `Bearer${ResponseJSON.token}`
         }
 
         let leftExpresion = "";
+        let ResponseText;
 
         for (let i=1; i<=Math.ceil(numero_tweets/20); i++) {
             if (i*20>numero_tweets) {
@@ -759,19 +760,19 @@ describe('Endpoint DELETE /eliminarTweet, eliminar un tweet', () => {
         // Primero creamos el Tweet a que luego se va a eliminar
 
         // Creamos el usuario y nos logueamos
-        let {email, DB_usuario, ResponseJSON} = await registerAndLogin();
+        const {email, DB_usuario, ResponseJSON} = await registerAndLogin();
 
         // Creando el tweet
-        let Headers = {
+        const Headers = {
             'Content-Type': 'application/json',
             'Authorization': `Bearer${ResponseJSON.token}`
         }
         const date = parseInt(Date.now());
         const mensaje = `Es es mi primer tweet ${date}`;
-        let Body = {
+        const Body = {
             mensaje
         }
-        ResponseText = await POST(`${__URL__}/tweet`, Headers, Body);
+        let ResponseText = await POST(`${__URL__}/tweet`, Headers, Body);
 
         let DB_tweet = await (await db()).collection('tweet').findOne({mensaje: mensaje});
         
@@ -842,7 +843,7 @@ describe('Endpoint POST /subirAvatar, subir la imagen del Avatar al servidor', (
         let {email, DB_usuario, ResponseJSON} = await registerAndLogin();
 
         // Llenamos la data especificando el archivo a subir y su clave=key para obtenerlo del Request
-        let Data = {
+        const Data = {
             authorization: `Bearer${ResponseJSON.token}`,
             key: 'avatar',
             filePath: `${__dirname}/resources/avatars/Pablo-Tilotta.jpeg`
@@ -851,7 +852,7 @@ describe('Endpoint POST /subirAvatar, subir la imagen del Avatar al servidor', (
         };
 
         // Realizando petición, subida de la imagen
-        ResponseText = await POST_FILE(`${__URL__}/subirAvatar`, Data);
+        const ResponseText = await POST_FILE(`${__URL__}/subirAvatar`, Data);
         
         // Chequeando que el archivo se haya subido y que se haya registrado en la base de datos
         DB_usuario = await (await db()).collection('usuarios').findOne({_id: DB_usuario._id});
@@ -859,8 +860,8 @@ describe('Endpoint POST /subirAvatar, subir la imagen del Avatar al servidor', (
         expect(file_match).toContain(DB_usuario.avatar);
 
         // Chequeando que el MD5 del archivo original coincida con el subido al servidor
-        MD5_original = await (await exec(`md5sum "${Data.filePath}" | awk '{ print \$1 }'`)).stdout;
-        MD5_uploaded = await (await exec(`md5sum "${__DIR_APP__}/uploads/avatars/${DB_usuario.avatar}" | awk '{ print \$1 }'`)).stdout;
+        const MD5_original = await (await exec(`md5sum "${Data.filePath}" | awk '{ print \$1 }'`)).stdout;
+        const MD5_uploaded = await (await exec(`md5sum "${__DIR_APP__}/uploads/avatars/${DB_usuario.avatar}" | awk '{ print \$1 }'`)).stdout;
         expect(MD5_uploaded).toBe(MD5_original);
 
     });
@@ -908,7 +909,7 @@ describe('Endpoint GET /obtenerAvatar, obtiene el archivo/recurso imagen del Ava
     it('Default', async () => {
 
         // Creamos el usuario y nos logueamos
-        let {email, DB_usuario, ResponseJSON} = await registerAndLogin();
+        const {email, DB_usuario, ResponseJSON} = await registerAndLogin();
 
         // Llenamos la data especificando el archivo a subir y su clave=key para obtenerlo del Request
         let Data = {
@@ -920,14 +921,14 @@ describe('Endpoint GET /obtenerAvatar, obtiene el archivo/recurso imagen del Ava
         };
 
         // Realizamos la petición, subida de la imagen
-        ResponseText = await POST_FILE(`${__URL__}/subirAvatar`, Data);
+        const ResponseText = await POST_FILE(`${__URL__}/subirAvatar`, Data);
 
         // Obteniendo el archivo previamente subido
-        let { Response, File } = await GET_FILE(`${__URL__}/obtenerAvatar?id=${DB_usuario._id.toString()}`, null);
+        const { Response, File } = await GET_FILE(`${__URL__}/obtenerAvatar?id=${DB_usuario._id.toString()}`, null);
 
         // Chequeando MD5
-        MD5_original = await (await exec(`md5sum "${Data.filePath}" | awk '{ print \$1 }'`)).stdout;
-        MD5_downloaded = await (await exec(`md5sum "${File}" | awk '{ print \$1 }'`)).stdout;
+        let MD5_original = await (await exec(`md5sum "${Data.filePath}" | awk '{ print \$1 }'`)).stdout;
+        let MD5_downloaded = await (await exec(`md5sum "${File}" | awk '{ print \$1 }'`)).stdout;
         expect(MD5_downloaded).toBe(MD5_original);
 
         // Chequeando funcionamiento del MD5 en su no coincidencia!
@@ -989,7 +990,7 @@ describe('Endpoint POST /subirBanner, subir la imagen del Banner al servidor', (
         let {email, DB_usuario, ResponseJSON} = await registerAndLogin();
 
         // Llenamos la data especificando el archivo a subir y su clave=key para obtenerlo del Request
-        let Data = {
+        const Data = {
             authorization: `Bearer${ResponseJSON.token}`,
             key: 'banner',
             filePath: `${__dirname}/resources/banners/banner-pablo-tilotta.jpg`
@@ -998,7 +999,7 @@ describe('Endpoint POST /subirBanner, subir la imagen del Banner al servidor', (
         };
 
         // Realizando petición, subida de la imagen
-        ResponseText = await POST_FILE(`${__URL__}/subirBanner`, Data);
+        const ResponseText = await POST_FILE(`${__URL__}/subirBanner`, Data);
         
         // Chequeando que el archivo se haya subido y que se haya registrado en la base de datos
         DB_usuario = await (await db()).collection('usuarios').findOne({_id: DB_usuario._id});
@@ -1006,8 +1007,8 @@ describe('Endpoint POST /subirBanner, subir la imagen del Banner al servidor', (
         expect(file_match).toContain(DB_usuario.banner);
 
         // Chequeando que el MD5 del archivo original coincida con el subido al servidor
-        MD5_original = await (await exec(`md5sum "${Data.filePath}" | awk '{ print \$1 }'`)).stdout;
-        MD5_uploaded = await (await exec(`md5sum "${__DIR_APP__}/uploads/banners/${DB_usuario.banner}" | awk '{ print \$1 }'`)).stdout;
+        const MD5_original = await (await exec(`md5sum "${Data.filePath}" | awk '{ print \$1 }'`)).stdout;
+        const MD5_uploaded = await (await exec(`md5sum "${__DIR_APP__}/uploads/banners/${DB_usuario.banner}" | awk '{ print \$1 }'`)).stdout;
         expect(MD5_uploaded).toBe(MD5_original);
 
     });
@@ -1059,7 +1060,7 @@ describe('Endpoint GET /obtenerBanner, obtiene el archivo/recurso imagen del Ban
     it('Default', async () => {
 
         // Creamos el usuario y nos logueamos
-        let {email, DB_usuario, ResponseJSON} = await registerAndLogin();
+        const {email, DB_usuario, ResponseJSON} = await registerAndLogin();
 
         // Llenamos la data especificando el archivo a subir y su clave=key para obtenerlo del Request
         let Data = {
@@ -1071,14 +1072,14 @@ describe('Endpoint GET /obtenerBanner, obtiene el archivo/recurso imagen del Ban
         };
 
         // Realizamos la petición, subida de la imagen
-        ResponseText = await POST_FILE(`${__URL__}/subirBanner`, Data);
+        const ResponseText = await POST_FILE(`${__URL__}/subirBanner`, Data);
 
         // Obteniendo el archivo previamente subido
-        let { Response, File } = await GET_FILE(`${__URL__}/obtenerBanner?id=${DB_usuario._id.toString()}`, null);
+        const { Response, File } = await GET_FILE(`${__URL__}/obtenerBanner?id=${DB_usuario._id.toString()}`, null);
 
         // Chequeando MD5
-        MD5_original = await (await exec(`md5sum "${Data.filePath}" | awk '{ print \$1 }'`)).stdout;
-        MD5_downloaded = await (await exec(`md5sum "${File}" | awk '{ print \$1 }'`)).stdout;
+        let MD5_original = await (await exec(`md5sum "${Data.filePath}" | awk '{ print \$1 }'`)).stdout;
+        let MD5_downloaded = await (await exec(`md5sum "${File}" | awk '{ print \$1 }'`)).stdout;
         expect(MD5_downloaded).toBe(MD5_original);
 
         // Chequeando funcionamiento del MD5 en su no coincidencia!
@@ -1148,13 +1149,13 @@ describe('Endpoint POST /altaRelacion, crea la relecion "Seguir" de un usuario c
         const usuarioId = DB_usuario._id.toString();
 
         // Enviando peticion 
-        let Headers = {
+        const Headers = {
             'Content-Type': 'application/json',
             'Authorization': `Bearer${ResponseJSON.token}`
         }
-        let Body = {};
+        const Body = {};
 
-        ResponseText = await POST(`${__URL__}/altaRelacion?id=${usuarioRelacionId}`, Headers, Body);
+        const ResponseText = await POST(`${__URL__}/altaRelacion?id=${usuarioRelacionId}`, Headers, Body);
 
         // Verificando que se haya registrado en la base de datos
         const DB_relacion = await (await db()).collection('relacion').findOne({usuarioId, usuarioRelacionId});
@@ -1217,12 +1218,12 @@ describe('Endpoint DELETE /bajaRelacion, realiza el borrado de la relacion entre
         const usuarioId = DB_usuario._id.toString();
 
         // Creamos una relacion
-        let Headers = {
+        const Headers = {
             'Content-Type': 'application/json',
             'Authorization': `Bearer${ResponseJSON.token}`
         }
-        let Body = {};
-        ResponseText = await POST(`${__URL__}/altaRelacion?id=${usuarioRelacionId}`, Headers, Body);
+        const Body = {};
+        let ResponseText = await POST(`${__URL__}/altaRelacion?id=${usuarioRelacionId}`, Headers, Body);
 
         // Verificando que se haya registrado en la base de datos
         let DB_relacion = await (await db()).collection('relacion').findOne({usuarioId, usuarioRelacionId});
@@ -1291,13 +1292,13 @@ describe('Endpoint GET /consultaRelacion, chequea si hay relacion entre 2 usuari
         const usuarioId = DB_usuario._id.toString();
 
         // Enviando peticion 
-        let Headers = {
+        const Headers = {
             'Content-Type': 'application/json',
             'Authorization': `Bearer${ResponseJSON.token}`
         }
-        let Body = {};
+        const Body = {};
 
-        ResponseText = await POST(`${__URL__}/altaRelacion?id=${usuarioRelacionId}`, Headers, Body);
+        let ResponseText = await POST(`${__URL__}/altaRelacion?id=${usuarioRelacionId}`, Headers, Body);
         
         // Verificando que se haya registrado en la base de datos
         const DB_relacion = await (await db()).collection('relacion').findOne({usuarioId, usuarioRelacionId});
@@ -1363,7 +1364,7 @@ describe('Endpoint GET /consultaRelacion, chequea si hay relacion entre 2 usuari
 
 async function getListaUsuarios(__USUARIO_ID__, __SEARCH__, __TYPE__, __PAGE__) {
 
-    let __OPERATOR__ = {
+    const __OPERATOR__ = {
         'new': '$ne',
         'follow': '$eq',
     }
@@ -1423,24 +1424,24 @@ describe.skip('Endpoint GET /listaUsuarios, lee los usuarios registrados en el s
 
         // Registramos el usuario a "Seguir"
         let {email, DB_usuario, ResponseJSON} = await registerAndLogin();
-        const usuario_1_RelacionId = DB_usuario._id.toString();
+        const usuario_1_relacionId = DB_usuario._id.toString();
 
         // Registramos el usuario que "Seguirá"
         ({email, DB_usuario, ResponseJSON} = await registerAndLogin());
         const usuarioId = DB_usuario._id.toString();
 
         // Creamos la relación entre los 2 últimos usuarios creados
-        let Headers = {
+        const Headers = {
             'Content-Type': 'application/json',
             'Authorization': `Bearer${ResponseJSON.token}`
         }
-        let Body = {};
+        const Body = {};
         
-        ResponseText = await POST(`${__URL__}/altaRelacion?id=${usuario_1_RelacionId}`, Headers, Body);
+        let ResponseText = await POST(`${__URL__}/altaRelacion?id=${usuario_1_relacionId}`, Headers, Body);
         
         // Registramos un tercer usuario que no se relacionará
         ({email, DB_usuario, ResponseJSON} = await registerAndLogin());
-        const usuario_2_RelacionId = DB_usuario._id.toString();
+        const usuario_2_relacionId = DB_usuario._id.toString();
         
         
         // Probamos el endpoint /listaUsuarios para 'new'
@@ -1482,6 +1483,180 @@ describe.skip('Endpoint GET /listaUsuarios, lee los usuarios registrados en el s
 
 
 
+
+
+
+
+
+
+
+
+
+//   ,ad8888ba,   88888888888  888888888888                                                                                                                                                                                           
+//  d8"'    `"8b  88                88                                                                                                                                                                                                
+// d8'            88                88                                                                                                                                                                                                
+// 88             88aaaaa           88                                                                                                                                                                                                
+// 88      88888  88"""""           88                                                                                                                                                                                                
+// Y8,        88  88                88                                                                                                                                                                                                
+//  Y8a.    .a88  88                88                                                                                                                                                                                                
+//   `"Y88888P"   88888888888       88                                                                                                                                                                                                
+                                                                                                                                                                                                                                   
+                                                                                                                                                                                                                                   
+                                                                                                                                                                                                                                   
+//           d8  88                      888888888888                                                              ad88888ba                                         88           88                                                  
+//         ,8P'  88                           88                                                ,d                d8"     "8b                                        ""           88                                                  
+//        d8"    88                           88                                                88                Y8,                                                             88                                                  
+//      ,8P'     88   ,adPPYba,   ,adPPYba,   88  8b      db      d8   ,adPPYba,   ,adPPYba,  MM88MMM  ,adPPYba,  `Y8aaaaa,     ,adPPYba,   ,adPPYb,d8  88       88  88   ,adPPYb,88   ,adPPYba,   8b,dPPYba,   ,adPPYba,  ,adPPYba,  
+//     d8"       88  a8P_____88  a8"     "8a  88  `8b    d88b    d8'  a8P_____88  a8P_____88    88     I8[    ""    `"""""8b,  a8P_____88  a8"    `Y88  88       88  88  a8"    `Y88  a8"     "8a  88P'   "Y8  a8P_____88  I8[    ""  
+//   ,8P'        88  8PP"""""""  8b       d8  88   `8b  d8'`8b  d8'   8PP"""""""  8PP"""""""    88      `"Y8ba,           `8b  8PP"""""""  8b       88  88       88  88  8b       88  8b       d8  88          8PP"""""""   `"Y8ba,   
+//  d8"          88  "8b,   ,aa  "8a,   ,a8"  88    `8bd8'  `8bd8'    "8b,   ,aa  "8b,   ,aa    88,    aa    ]8I  Y8a     a8P  "8b,   ,aa  "8a,   ,d88  "8a,   ,a88  88  "8a,   ,d88  "8a,   ,a8"  88          "8b,   ,aa  aa    ]8I  
+// 8P'           88   `"Ybbd8"'   `"YbbdP"'   88      YP      YP       `"Ybbd8"'   `"Ybbd8"'    "Y888  `"YbbdP"'   "Y88888P"    `"Ybbd8"'   `"YbbdP"Y8   `"YbbdP'Y8  88   `"8bbdP"Y8   `"YbbdP"'   88           `"Ybbd8"'  `"YbbdP"'  
+//                                                                                                                                          aa,    ,88                                                                                
+//                                                                                                                                           "Y8bbdP"                                                                                 
+
+//      .only
+//      .skip
+describe('Endpoint GET /leoTweetsSeguidores, Lee los tweets de todos nuestros seguidores', () => {
+
+    //.only
+    //.skip
+    it('Default', async () => {
+
+
+
+        // Registramos el primer usuario a "Seguir"
+        let {email, DB_usuario, ResponseJSON} = await registerAndLogin();
+        const usuario_1_relacionId = DB_usuario._id.toString();
+
+        // Dicho usuario envía un tweet 
+        const Headers_usuario_1 = {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer${ResponseJSON.token}`
+        }
+        let date = parseInt(Date.now());
+        let mensaje = `Soy el primer usuario, este es mi primer tweet ${date}`;
+        let Body = {
+            mensaje
+        }
+        let ResponseText = await POST(`${__URL__}/tweet`, Headers_usuario_1, Body);
+
+
+
+        // Registramos el segundo usuario a "Seguir"
+        ({email, DB_usuario, ResponseJSON} = await registerAndLogin());
+        const usuario_2_relacionId = DB_usuario._id.toString();
+
+        // Este usuario no relacionado tambien envía un tweet 
+        Headers = {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer${ResponseJSON.token}`
+        }
+        date = parseInt(Date.now());
+        mensaje = `Soy el segundo usuario, este es mi primer tweet ${date}`;
+        Body = {
+            mensaje
+        }
+        ResponseText = await POST(`${__URL__}/tweet`, Headers, Body);
+
+
+
+        // Registramos el usuario que "Seguirá" a estos dos últimos usuarios
+        ({email, DB_usuario, ResponseJSON} = await registerAndLogin());
+        const usuarioId = DB_usuario._id.toString();
+
+        // El usuario que seguirá tambien envía un tweet 
+        const Headers_seguidor = {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer${ResponseJSON.token}`
+        }
+        date = parseInt(Date.now());
+        mensaje = `Soy el tercer usuario principal/seguidor y este es mi primer tweet ${date}`;
+        Body = {
+            mensaje
+        }
+        ResponseText = await POST(`${__URL__}/tweet`, Headers_seguidor, Body);
+
+
+
+        // Creamos la relación entre los 2 últimos usuarios creados
+        Body = {};
+        
+        ResponseText = await POST(`${__URL__}/altaRelacion?id=${usuario_1_relacionId}`, Headers_seguidor, Body);
+        ResponseText = await POST(`${__URL__}/altaRelacion?id=${usuario_2_relacionId}`, Headers_seguidor, Body);
+
+
+
+        // Registramos un cuarto usuario que seguirá al tercero
+        ({email, DB_usuario, ResponseJSON} = await registerAndLogin());
+        const usuario_3_id = DB_usuario._id.toString();
+
+        // Este usuario tambien envía un tweet 
+        Headers = {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer${ResponseJSON.token}`
+        }
+        date = parseInt(Date.now());
+        mensaje = `Soy el cuarto usuario no relacionado con el tercero y este es mi primer tweet ${date}`;
+        Body = {
+            mensaje
+        }
+        ResponseText = await POST(`${__URL__}/tweet`, Headers, Body);
+        ResponseText = await POST(`${__URL__}/altaRelacion?id=${usuarioId}`, Headers, Body);
+
+
+
+        // Finalmente el primer usuario envía un segundo tweet 
+        date = parseInt(Date.now());
+        mensaje = `Soy el primer usuario, este es mi segundo tweet ${date}`;
+        Body = {
+            mensaje
+        }
+        ResponseText = await POST(`${__URL__}/tweet`, Headers_usuario_1, Body);
+
+
+
+        // Probamos el endpoint siendo el usuario principal
+        Body = {};
+        const pagina = 1;
+        ResponseText = await GET(`${__URL__}/leoTweetsSeguidores?pagina=${pagina}`, Headers_seguidor, Body);
+        ResponseJSON = JSON.parse(ResponseText);
+
+
+
+        // Confirmamos respuesta
+        const __OPERATOR__ = {
+            'new': '$ne',
+            'follow': '$eq',
+        }
+        const limit = 20;
+        const skip = (pagina - 1) * limit
+        const DB_cursor = await (await db()).collection('relacion').aggregate([
+            {$match: {usuarioId}},
+            {$lookup:{
+                from: 'tweet',
+                localField: "usuarioRelacionId",
+                foreignField: "userId",
+                as: 'tweet',
+            }},
+            {$unwind: "$tweet"},
+            {$sort: {fecha: -1}},
+            {$skip: skip},
+            {$limit: limit},
+        ]);
+        const DB_relacion = await DB_cursor.toArray();
+
+        const expectCountTweets = 3;
+
+        expect(DB_relacion.length).toBe(expectCountTweets);
+        expect(ResponseJSON.length).toBe(expectCountTweets);
+
+
+
+
+
+    });
+
+});
 
 
 
